@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Registration {
+  id                Int             @id @default(autoincrement())
+  name              String
+  email             String          @unique
+  phone             String
+  category          String
+  packageType       String? // Stores the selected package type (e.g., 'full', 'basic', 'bibOnly', etc.)
+  shirtSize         String? // Optional for family category
+  voucherCode       String? // Voucher code for community Fun Run 5K (legacy)
+  referralCodeId    Int? // New referral code system
+  // Family package data
+  familyPackageData Json? // Stores parent and child package details for family category
+  ticketUsed        Boolean         @default(false)
+  // Referral tracking
+  referralSource    String? // e.g., 'facebook_ads', 'organic', etc.
+  fbclid            String? // Facebook Click ID
+  utmSource         String? // UTM source parameter
+  utmMedium         String? // UTM medium parameter
+  utmCampaign       String? // UTM campaign parameter
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  payment           Payment?
+  referralCode      ReferralCode?   @relation(fields: [referralCodeId], references: [id])
+  referralUsage     ReferralUsage[]
+}
+
+model Payment {
+  id              Int          @id @default(autoincrement())
+  registrationId  Int          @unique
+  registration    Registration @relation(fields: [registrationId], references: [id])
+  merchantRef     String       @unique
+  amount          Int
+  paymentUrl      String
+  status          String       @default("pending") // pending, paid, expired, failed, refunded
+  tripayReference String?      @unique
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model ScannerAccess {
+  id         Int       @id @default(autoincrement())
+  secretCode String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  lastUsedAt DateTime?
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Settings {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WhatsAppSession {
+  id          Int      @id @default(autoincrement())
+  name        String // e.g., "Customer Support", "Marketing", "Registration"
+  sessionId   String // wa-multi-session session ID (unique identifier for the session)
+  phoneNumber String // WhatsApp number associated with this session
+  isActive    Boolean  @default(true)
+  isDefault   Boolean  @default(false) // One session should be marked as default
+  description String? // Optional description for the session
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([name])
+  @@unique([sessionId])
+}
+
+model ReferralCode {
+  id                   Int       @id @default(autoincrement())
+  code                 String    @unique // The referral code itself
+  name                 String // Display name for the referral code
+  description          String? // Optional description
+  maxClaims            Int // Maximum number of times this code can be used
+  usedClaims           Int       @default(0) // Number of times this code has been used
+  isActive             Boolean   @default(true) // Whether the code is currently active
+  validFrom            DateTime? // Optional start date for validity
+  validUntil           DateTime? // Optional end date for validity
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  // Relations
+  registrations Registration[]
+  usages        ReferralUsage[]
+}
+
+model ReferralUsage {
+  id             Int          @id @default(autoincrement())
+  referralCodeId Int
+  registrationId Int
+  referralCode   ReferralCode @relation(fields: [referralCodeId], references: [id])
+  registration   Registration @relation(fields: [registrationId], references: [id])
+  usedAt         DateTime     @default(now())
+
+  @@unique([referralCodeId, registrationId])
+}

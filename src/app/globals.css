@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary: #00745D;
+  --accent: #F99E06;
+}
+
+@layer base {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    font-family: var(--font-poppins), 'Poppins', sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: var(--font-poppins), 'Poppins', sans-serif;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-orbitron), 'Orbitron', sans-serif;
+    font-weight: 600;
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+    background-color: #00745D;
+  }
+
+  .text-primary {
+    color: #00745D;
+  }
+
+  .bg-accent {
+    background-color: #F99E06;
+  }
+
+  .text-accent {
+    color: #F99E06;
+  }
+
+  .border-primary {
+    border-color: #00745D;
+  }
+
+  .border-accent {
+    border-color: #F99E06;
+  }
+
+  .font-display {
+    font-family: var(--font-orbitron), 'Orbitron', sans-serif;
+  }
+
+  .font-body {
+    font-family: var(--font-poppins), 'Poppins', sans-serif;
+  }
+}
