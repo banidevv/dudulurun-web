@@ -100,7 +100,6 @@ export async function PUT(
             validUntil,
             discount,
             discountPercent,
-            applicableCategories,
         } = body;
 
         // Validation

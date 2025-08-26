@@ -12,9 +12,6 @@ interface ReferralCode {
     isActive: boolean;
     validFrom?: string;
     validUntil?: string;
-    discount?: number;
-    discountPercent?: number;
-    applicableCategories?: string[];
     createdAt: string;
     updatedAt: string;
     _count: {
@@ -130,9 +127,6 @@ const ReferralCodesPage = () => {
                 isActive: formData.isActive,
                 validFrom: formData.validFrom || null,
                 validUntil: formData.validUntil || null,
-                discount: null, // Not used in flat pricing system
-                discountPercent: null, // Not used in flat pricing system
-                applicableCategories: null, // Removed - applies to all categories
             };
 
             const response = await fetch(url, {

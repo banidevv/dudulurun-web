@@ -23,14 +23,10 @@ async function testFlatPricing() {
         if (validationResponse.ok) {
             const validationData = await validationResponse.json();
             console.log('✅ Referral validation successful');
-            console.log(`   Code: ${validationData.referralCode.code}`);
-            console.log(`   Name: ${validationData.referralCode.name}`);
-            console.log(`   Savings shown: IDR ${validationData.referralCode.discount.toLocaleString()}`);
-            console.log(`   Remaining claims: ${validationData.referralCode.remainingClaims}`);
         } else {
             console.log('❌ Referral validation failed');
             const errorData = await validationResponse.json();
-            console.log(`   Error: ${errorData.error}`);
+            
         }
         console.log();
 
@@ -67,15 +63,12 @@ async function testFlatPricing() {
                 name: true,
                 maxClaims: true,
                 usedClaims: true,
-                applicableCategories: true,
             }
         });
 
         console.log(`   Found ${referralCodes.length} active referral codes:`);
         referralCodes.forEach(code => {
-            const categories = code.applicableCategories as string[] | null;
-            const categoryStr = categories ? categories.join(', ') : 'All categories';
-            console.log(`   - ${code.code}: ${code.name} (${code.usedClaims}/${code.maxClaims} used, ${categoryStr})`);
+            console.log(`   - ${code.code}: ${code.name} (${code.usedClaims}/${code.maxClaims} used)`);
         });
         console.log();
 

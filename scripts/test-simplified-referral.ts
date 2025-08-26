@@ -13,10 +13,7 @@ async function testSimplifiedReferralSystem() {
                 code: 'UNIVERSAL2025',
                 name: 'Universal Referral Code',
                 description: 'Berlaku untuk semua kategori',
-                maxClaims: 10,
-                discount: null, // Not used in flat pricing
-                discountPercent: null, // Not used in flat pricing
-                applicableCategories: null, // Universal - no category restrictions
+                maxClaims: 10, // Universal - no category restrictions
                 isActive: true,
                 validFrom: new Date(),
                 validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
@@ -97,7 +94,6 @@ async function testSimplifiedReferralSystem() {
             select: {
                 code: true,
                 name: true,
-                applicableCategories: true,
                 maxClaims: true,
                 usedClaims: true,
             }
@@ -105,10 +101,7 @@ async function testSimplifiedReferralSystem() {
 
         console.log(`   Found ${allCodes.length} active referral codes:`);
         allCodes.forEach(code => {
-            const categoryStatus = code.applicableCategories ?
-                `Specific: ${(code.applicableCategories as string[]).join(', ')}` :
-                'Universal (All Categories)';
-            console.log(`   - ${code.code}: ${categoryStatus} (${code.usedClaims}/${code.maxClaims} used)`);
+            console.log(`   - ${code.code}: Universal (${code.usedClaims}/${code.maxClaims} used)`);
         });
         console.log();
 

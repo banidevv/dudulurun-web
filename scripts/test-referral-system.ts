@@ -13,9 +13,7 @@ async function testReferralSystem() {
                 code: 'TESTVALIDATION',
                 name: 'Test Validation Code',
                 description: 'Code for testing validation logic',
-                maxClaims: 5,
-                discount: 20000,
-                applicableCategories: ['fun'],
+                maxClaims: 5,   
                 isActive: true,
                 validFrom: new Date(),
                 validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
@@ -124,8 +122,6 @@ async function testReferralSystem() {
                 name: 'Expired Test Code',
                 description: 'Code for testing expiry logic',
                 maxClaims: 10,
-                discount: 15000,
-                applicableCategories: null,
                 isActive: true,
                 validFrom: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
                 validUntil: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago (expired)
@@ -145,8 +141,6 @@ async function testReferralSystem() {
                 name: 'Inactive Test Code',
                 description: 'Code for testing inactive logic',
                 maxClaims: 10,
-                discount: 15000,
-                applicableCategories: null,
                 isActive: false, // Inactive
             }
         });
@@ -206,20 +200,9 @@ async function validateReferralCode(code: string, category: string) {
             return { valid: false, error: 'Kode referral sudah mencapai batas maksimal penggunaan' };
         }
 
-        if (referralCode.applicableCategories) {
-            const applicableCategories = referralCode.applicableCategories as string[];
-            if (!applicableCategories.includes(category)) {
-                return { valid: false, error: `Kode referral tidak berlaku untuk kategori ${category}` };
-            }
-        }
 
-        let discountAmount = 0;
-        if (referralCode.discount) {
-            discountAmount = referralCode.discount;
-        } else if (referralCode.discountPercent) {
-            const basePrice = category === 'family' ? 315000 : 225000;
-            discountAmount = Math.round((basePrice * referralCode.discountPercent) / 100);
-        }
+
+
 
         return {
             valid: true,
@@ -228,7 +211,6 @@ async function validateReferralCode(code: string, category: string) {
                 code: referralCode.code,
                 name: referralCode.name,
                 description: referralCode.description,
-                discount: discountAmount,
                 remainingClaims: referralCode.maxClaims - referralCode.usedClaims,
             },
         };
