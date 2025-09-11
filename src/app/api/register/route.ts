@@ -13,29 +13,19 @@ interface FamilyPackage {
 }
 
 const categoryNames = {
-  fun: "fun",
-  family: "family",
+  fun: "Fun Run 5K",
+  family: "Family Run 2.5K",
 } as const;
 
 const packageNames = {
   // Fun Run packages
-  full: "BIB + Jersey + Medal",
-  basic: "BIB + Jersey + Medal",
-  bibOnly: "BIB Only",
-  // Family Run packages
-  parentFull: "Parent: BIB + Jersey + Medal",
-  parentBibOnly: "Parent: BIB + Jersey + Medal",
-  childFull: "Child: BIB + Jersey + Medal",
-  childBibOnly: "Child: BIB + Jersey + Medal",
-  // Kids Dash packages
-  new: "Baru",
-  po: "PO"
+  general: "BIB + Jersey + Medal",
+  community: "BIB + Jersey + Medal",
+
 } as const;
 
 type Category = keyof typeof categoryNames;
 type FunPackageType = 'community' | 'general';
-type KidsPackageType = 'new' | 'po';
-type NonFamilyPackageType = FunPackageType | KidsPackageType;
 
 export async function POST(request: Request) {
   const prisma = getPrismaClient();
@@ -48,6 +38,9 @@ export async function POST(request: Request) {
       category,
       packageType,
       shirtSize,
+      customShirtSize,
+      customChildShirtSize,
+      childAge,
       method,
       familyPackage,
       voucherCode,
@@ -94,6 +87,9 @@ export async function POST(request: Request) {
         category,
         packageType: category === 'family' ? undefined : packageType,
         shirtSize: category === 'family' ? undefined : shirtSize,
+        customShirtSize,
+        customChildShirtSize,
+        childAge,
         // Add voucher code for fun run community (legacy)
         ...(voucherCode ? { voucherCode } : {}),
         // Add referral code ID (new system)
@@ -139,7 +135,7 @@ export async function POST(request: Request) {
         phone,
         amount: finalAmount,
         category: category as Category,
-        packageType: category === 'family' ? undefined : packageType as NonFamilyPackageType,
+        packageType: category === 'family' ? undefined : packageType,
         shirtSize: category === 'family' ? undefined : shirtSize,
         method,
         familyPackage: category === 'family' ? familyPackage as FamilyPackage : undefined,
@@ -187,10 +183,16 @@ export async function POST(request: Request) {
           if (familyPackage.childShirtSizes) {
             packageInfo += `\n- Ukuran Baju Child: ${familyPackage.childShirtSizes}`;
           }
+          if (childAge) {
+            packageInfo += `\n- Umur Anak: ${childAge} tahun`;
+          }
         } else {
-          packageInfo = `\n- Paket: ${packageNames[packageType as keyof typeof packageNames]}`;
+          packageInfo = ` - ${packageType === 'general' ? 'Umum' : 'Community'}\n- Paket: ${packageNames[packageType as keyof typeof packageNames]}`;
           if (shirtSize) {
             packageInfo += `\n- Ukuran Baju: ${shirtSize}`;
+          }
+          if (customShirtSize) {
+            packageInfo += `\n- Ukuran Baju Kustom: ${customShirtSize}`;
           }
         }
 

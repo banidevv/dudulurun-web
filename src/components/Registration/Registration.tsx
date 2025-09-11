@@ -23,7 +23,10 @@ interface FormData {
     phone: string;
     email: string;
     shirtSize: string;
+    customShirtSize: string;
     childShirtSize: string;
+    customChildShirtSize: string;
+    childAge: string;
 
     // Step 3
     paymentMethod: string;
@@ -48,6 +51,8 @@ export const Registration = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [validatedReferralCode, setValidatedReferralCode] = useState<ReferralCode | null>(null);
     const [referralError, setReferralError] = useState<string | null>(null);
+    const [useCustomShirtSize, setUseCustomShirtSize] = useState(false);
+    const [useCustomChildShirtSize, setUseCustomChildShirtSize] = useState(false);
 
     const [formData, setFormData] = useState<FormData>({
         category: '',
@@ -57,7 +62,10 @@ export const Registration = () => {
         phone: '',
         email: '',
         shirtSize: '',
+        customShirtSize: '',
         childShirtSize: '',
+        customChildShirtSize: '',
+        childAge: '',
         paymentMethod: ''
     });
 
@@ -222,13 +230,29 @@ export const Registration = () => {
                 }
                 return true;
             case 2:
-                if (!formData.name || !formData.phone || !formData.email || !formData.shirtSize) {
+                if (!formData.name || !formData.phone || !formData.email) {
                     alert('Lengkapi semua data biodata terlebih dahulu');
                     return false;
                 }
-                if (formData.category === 'family' && !formData.childShirtSize) {
-                    alert('Pilih ukuran jersey anak terlebih dahulu');
+                // Validate shirt size (either standard or custom)
+                if (!formData.shirtSize && !formData.customShirtSize) {
+                    alert('Pilih ukuran jersey atau masukkan ukuran kustom terlebih dahulu');
                     return false;
+                }
+                if (formData.category === 'family') {
+                    if (!formData.childShirtSize && !formData.customChildShirtSize) {
+                        alert('Pilih ukuran jersey anak atau masukkan ukuran kustom terlebih dahulu');
+                        return false;
+                    }
+                    if (!formData.childAge) {
+                        alert('Masukkan umur anak terlebih dahulu');
+                        return false;
+                    }
+                    const childAgeNum = parseInt(formData.childAge);
+                    if (isNaN(childAgeNum) || childAgeNum < 7 || childAgeNum > 13) {
+                        alert('Umur anak harus antara 7-13 tahun');
+                        return false;
+                    }
                 }
 
                 // Validate email and phone before proceeding
@@ -283,6 +307,9 @@ export const Registration = () => {
                 category: formData.category,
                 packageType: formData.packageType,
                 shirtSize: formData.shirtSize,
+                customShirtSize: formData.customShirtSize,
+                customChildShirtSize: formData.customChildShirtSize,
+                childAge: formData.childAge ? parseInt(formData.childAge) : undefined,
                 method: formData.paymentMethod,
                 // Use new referral code system
                 referralCodeId: validatedReferralCode?.id || undefined,
@@ -294,8 +321,8 @@ export const Registration = () => {
                         childCount: 1,
                         parentPackageType: 'parentFull',
                         childPackageType: 'childFull',
-                        parentShirtSizes: formData.shirtSize,
-                        childShirtSizes: formData.childShirtSize
+                        parentShirtSizes: formData.shirtSize || formData.customShirtSize,
+                        childShirtSizes: formData.childShirtSize || formData.customChildShirtSize
                     }
                 })
             };
@@ -525,7 +552,7 @@ export const Registration = () => {
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Nama Lengkap Pendaftar *
+                                        Nama Lengkap Pendaftar {formData.category === 'family' ? '(Nama Orang Tua)' : ''}*
                                     </label>
                                     <input
                                         type="text"
@@ -570,11 +597,11 @@ export const Registration = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Ukuran Jersey {formData.category === 'family' ? '(Dewasa)' : ''} *
                                 </label>
-                                <div className="grid grid-cols-5 gap-3">
+                                <div className="grid grid-cols-5 gap-3 mb-3">
                                     {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
                                         <label
                                             key={size}
-                                            className={`flex items-center justify-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${formData.shirtSize === size
+                                            className={`flex items-center justify-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${formData.shirtSize === size && !useCustomShirtSize
                                                 ? 'bg-primary text-white border-primary'
                                                 : 'border-gray-300'
                                                 }`}
@@ -583,14 +610,48 @@ export const Registration = () => {
                                                 type="radio"
                                                 name="shirtSize"
                                                 value={size}
-                                                checked={formData.shirtSize === size}
-                                                onChange={(e) => handleInputChange('shirtSize', e.target.value)}
+                                                checked={formData.shirtSize === size && !useCustomShirtSize}
+                                                onChange={(e) => {
+                                                    handleInputChange('shirtSize', e.target.value);
+                                                    setUseCustomShirtSize(false);
+                                                    setFormData(prev => ({ ...prev, customShirtSize: '' }));
+                                                }}
                                                 className="sr-only"
                                             />
                                             <span className="font-medium">{size}</span>
                                         </label>
                                     ))}
                                 </div>
+
+                                {/* Custom Size Option */}
+                                <div className="flex items-center space-x-3">
+                                    <label className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="shirtSize"
+                                            checked={useCustomShirtSize}
+                                            onChange={() => {
+                                                setUseCustomShirtSize(true);
+                                                setFormData(prev => ({ ...prev, shirtSize: '' }));
+                                            }}
+                                            className="w-4 h-4 text-primary"
+                                        />
+                                        <span className="ml-2 text-sm text-gray-700">Ukuran Kustom</span>
+                                    </label>
+                                </div>
+
+                                {useCustomShirtSize && (
+                                    <div className="mt-3">
+                                        <input
+                                            type="text"
+                                            value={formData.customShirtSize}
+                                            onChange={(e) => handleInputChange('customShirtSize', e.target.value)}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                            placeholder="Masukkan ukuran jersey kustom (contoh: XXL, 3XL, dll)"
+                                            required
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             {/* Child Jersey Size for Family Run */}
@@ -599,11 +660,11 @@ export const Registration = () => {
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Ukuran Jersey Anak *
                                     </label>
-                                    <div className="grid grid-cols-5 gap-3">
+                                    <div className="grid grid-cols-5 gap-3 mb-3">
                                         {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
                                             <label
                                                 key={size}
-                                                className={`flex items-center justify-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${formData.childShirtSize === size
+                                                className={`flex items-center justify-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${formData.childShirtSize === size && !useCustomChildShirtSize
                                                     ? 'bg-primary text-white border-primary'
                                                     : 'border-gray-300'
                                                     }`}
@@ -612,14 +673,68 @@ export const Registration = () => {
                                                     type="radio"
                                                     name="childShirtSize"
                                                     value={size}
-                                                    checked={formData.childShirtSize === size}
-                                                    onChange={(e) => handleInputChange('childShirtSize', e.target.value)}
+                                                    checked={formData.childShirtSize === size && !useCustomChildShirtSize}
+                                                    onChange={(e) => {
+                                                        handleInputChange('childShirtSize', e.target.value);
+                                                        setUseCustomChildShirtSize(false);
+                                                        setFormData(prev => ({ ...prev, customChildShirtSize: '' }));
+                                                    }}
                                                     className="sr-only"
                                                 />
                                                 <span className="font-medium">{size}</span>
                                             </label>
                                         ))}
                                     </div>
+
+                                    {/* Custom Child Size Option */}
+                                    <div className="flex items-center space-x-3 mb-3">
+                                        <label className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="childShirtSize"
+                                                checked={useCustomChildShirtSize}
+                                                onChange={() => {
+                                                    setUseCustomChildShirtSize(true);
+                                                    setFormData(prev => ({ ...prev, childShirtSize: '' }));
+                                                }}
+                                                className="w-4 h-4 text-primary"
+                                            />
+                                            <span className="ml-2 text-sm text-gray-700">Ukuran Kustom</span>
+                                        </label>
+                                    </div>
+
+                                    {useCustomChildShirtSize && (
+                                        <div className="mb-4">
+                                            <input
+                                                type="text"
+                                                value={formData.customChildShirtSize}
+                                                onChange={(e) => handleInputChange('customChildShirtSize', e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                placeholder="Masukkan ukuran jersey anak kustom (contoh: XXL, 3XL, dll)"
+                                                required
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Child Age for Family Run */}
+                            {formData.category === 'family' && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Umur Anak *
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min="7"
+                                        max="13"
+                                        value={formData.childAge}
+                                        onChange={(e) => handleInputChange('childAge', e.target.value)}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        placeholder="Masukkan umur anak (7-13 tahun)"
+                                        required
+                                    />
+                                    <p className="mt-1 text-sm text-gray-500">Umur anak harus antara 7-13 tahun</p>
                                 </div>
                             )}
 
@@ -784,10 +899,17 @@ export const Registration = () => {
                                     <div className="flex justify-between">
                                         <span>Ukuran Jersey:</span>
                                         <span className="font-semibold">
-                                            {formData.shirtSize}
-                                            {formData.category === 'family' && ` (Dewasa), ${formData.childShirtSize} (Anak)`}
+                                            {formData.shirtSize || formData.customShirtSize}
+                                            {formData.category === 'family' && ` (Dewasa), ${formData.childShirtSize || formData.customChildShirtSize} (Anak)`}
                                         </span>
                                     </div>
+
+                                    {formData.category === 'family' && formData.childAge && (
+                                        <div className="flex justify-between">
+                                            <span>Umur Anak:</span>
+                                            <span className="font-semibold">{formData.childAge} tahun</span>
+                                        </div>
+                                    )}
 
                                     {formData.communityReferral && (
                                         <div className="flex justify-between">
