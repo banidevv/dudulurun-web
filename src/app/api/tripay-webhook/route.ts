@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'Invalid signature' },
         { status: 403 }
-      );
+      );   
     }
 
     // Parse and validate payload

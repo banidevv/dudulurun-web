@@ -79,22 +79,18 @@ export const Navigation: React.FC = () => {
 
   return (
     <header id="header" className="bg-white shadow-md fixed top-0 w-full z-50">
-      <div className="container mx-auto px-6 py-4">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            {/* <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <i className="fa-solid fa-person-running text-white text-lg"></i>
-            </div> */}
-            <img src="/images/logo.png" className="w-[120px] h-[100px]" />
-            {/* <span className="text-2xl font-bold text-primary">DuduluRun</span> */}
+            <img src="/images/logo.png" className="w-20 h-16 sm:w-24 sm:h-20 md:w-[120px] md:h-[100px]" alt="DuduluRun Logo" />
           </div>
 
-          <nav id="main-nav" className="hidden md:flex items-center space-x-8">
+          <nav id="main-nav" className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navItems.map((item) => (
               <span
                 key={item.href}
                 onClick={() => scrollToSection(item.href)}
-                className={`font-medium transition-colors cursor-pointer ${activeItem === item.href ? 'text-primary' : 'text-gray-700 hover:text-primary'
+                className={`font-medium transition-colors cursor-pointer text-sm lg:text-base ${activeItem === item.href ? 'text-primary' : 'text-gray-700 hover:text-primary'
                   }`}
               >
                 {item.label}
@@ -102,7 +98,7 @@ export const Navigation: React.FC = () => {
             ))}
             <span
               onClick={scrollToRegistration}
-              className="bg-accent text-white px-6 py-2 rounded-full font-semibold hover:bg-orange-600 transition-colors cursor-pointer"
+              className="bg-accent text-white px-4 lg:px-6 py-2 rounded-full font-semibold hover:bg-orange-600 transition-colors cursor-pointer text-sm lg:text-base touch-manipulation"
             >
               Daftar Sekarang
             </span>
@@ -111,21 +107,22 @@ export const Navigation: React.FC = () => {
           <button
             id="mobile-menu-btn"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-gray-700"
+            className="md:hidden text-gray-700 p-2 touch-manipulation"
+            aria-label="Toggle mobile menu"
           >
-            <i className="fa-solid fa-bars text-xl"></i>
+            <i className={`fa-solid ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
-            <div className="flex flex-col space-y-2 pt-4">
+            <div className="flex flex-col space-y-1 pt-4">
               {navItems.map((item) => (
                 <span
                   key={item.href}
                   onClick={() => scrollToSection(item.href)}
-                  className={`py-2 px-4 font-medium transition-colors cursor-pointer ${activeItem === item.href ? 'text-primary bg-gray-50' : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                  className={`py-3 px-4 font-medium transition-colors cursor-pointer touch-manipulation rounded-lg ${activeItem === item.href ? 'text-primary bg-gray-50' : 'text-gray-700 hover:text-primary hover:bg-gray-50'
                     }`}
                 >
                   {item.label}
@@ -133,7 +130,7 @@ export const Navigation: React.FC = () => {
               ))}
               <span
                 onClick={scrollToRegistration}
-                className="bg-accent text-white px-4 py-2 rounded-full font-semibold hover:bg-orange-600 transition-colors cursor-pointer text-center mt-4"
+                className="bg-accent text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors cursor-pointer text-center mt-2 touch-manipulation"
               >
                 Daftar Sekarang
               </span>

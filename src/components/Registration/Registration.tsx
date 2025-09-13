@@ -258,23 +258,23 @@ export const Registration = () => {
                 // Validate email and phone before proceeding
                 setValidatingData(true);
                 try {
-                    const response = await fetch('/api/validate-registration', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            email: formData.email,
-                            phone: formData.phone,
-                        }),
-                    });
+                    // // const response = await fetch('/api/validate-registration', {
+                    // //     method: 'POST',
+                    // //     headers: {
+                    // //         'Content-Type': 'application/json',
+                    // //     },
+                    // //     body: JSON.stringify({
+                    // //         email: formData.email,
+                    // //         phone: formData.phone,
+                    // //     }),
+                    // // });
 
-                    const data = await response.json();
+                    // const data = await response.json();
 
-                    if (!response.ok) {
-                        alert(data.error || 'Terjadi kesalahan saat memvalidasi data');
-                        return false;
-                    }
+                    // if (!response.ok) {
+                    //     alert(data.error || 'Terjadi kesalahan saat memvalidasi data');
+                    //     return false;
+                    // }
 
                     return true;
                 } catch (error) {
@@ -360,27 +360,27 @@ export const Registration = () => {
     };
 
     return (
-        <section id="registrasi" className="py-20 bg-gradient-to-r from-primary to-teal-700 text-white">
-            <div className="container mx-auto px-6">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold mb-6">Daftar Sekarang</h2>
+        <section id="registrasi" className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-primary to-teal-700 text-white">
+            <div className="container mx-auto px-4 sm:px-6">
+                <div className="text-center mb-8 sm:mb-12">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">Daftar Sekarang</h2>
                 </div>
 
-                <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-2xl p-8 text-gray-900">
+                <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-2xl p-4 sm:p-6 lg:p-8 text-gray-900">
                     {/* Progress Steps */}
-                    <div className="flex justify-between items-center mb-8">
+                    <div className="flex justify-between items-center mb-6 sm:mb-8">
                         {[1, 2, 3].map((step) => (
-                            <div key={step} className="flex items-center">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${currentStep >= step ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
+                            <div key={step} className="flex items-center flex-1">
+                                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-semibold text-sm sm:text-base ${currentStep >= step ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
                                     }`}>
                                     {step}
                                 </div>
-                                <div className={`ml-3 ${currentStep >= step ? 'text-primary' : 'text-gray-500'}`}>
+                                <div className={`ml-2 sm:ml-3 text-xs sm:text-sm ${currentStep >= step ? 'text-primary' : 'text-gray-500'} hidden sm:block`}>
                                     {step === 1 && 'Pilih Kategori'}
                                     {step === 2 && 'Biodata'}
                                     {step === 3 && 'Pembayaran'}
                                 </div>
-                                {step < 3 && <div className={`w-16 h-0.5 ml-4 ${currentStep > step ? 'bg-primary' : 'bg-gray-200'
+                                {step < 3 && <div className={`w-8 sm:w-16 h-0.5 ml-2 sm:ml-4 ${currentStep > step ? 'bg-primary' : 'bg-gray-200'
                                     }`} />}
                             </div>
                         ))}
@@ -388,17 +388,17 @@ export const Registration = () => {
 
                     {/* Step 1: Category Selection */}
                     {currentStep === 1 && (
-                        <div className="space-y-6">
-                            <h3 className="text-2xl font-bold text-center mb-6">Pilih Kategori Lomba</h3>
+                        <div className="space-y-4 sm:space-y-6">
+                            <h3 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Pilih Kategori Lomba</h3>
 
                             {/* Category Selection */}
-                            <div className="space-y-4">
-                                <div className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${formData.category === 'fun' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                            <div className="space-y-3 sm:space-y-4">
+                                <div className={`border-2 rounded-lg p-3 sm:p-4 cursor-pointer transition-colors touch-manipulation ${formData.category === 'fun' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
                                     }`} onClick={() => handleInputChange('category', 'fun')}>
                                     <div className="flex items-center justify-between">
-                                        <div>
-                                            <h4 className="font-semibold text-lg">Fun Run 5K</h4>
-                                            <p className="text-gray-600">Lari santai 5 kilometer</p>
+                                        <div className="flex-1">
+                                            <h4 className="font-semibold text-base sm:text-lg">Fun Run 5K</h4>
+                                            <p className="text-gray-600 text-sm sm:text-base">Lari santai 5 kilometer</p>
                                         </div>
                                         <input
                                             type="radio"
@@ -406,18 +406,18 @@ export const Registration = () => {
                                             value="fun"
                                             checked={formData.category === 'fun'}
                                             onChange={() => handleInputChange('category', 'fun')}
-                                            className="w-4 h-4 text-primary"
+                                            className="w-4 h-4 text-primary ml-2"
                                         />
                                     </div>
                                 </div>
 
-                                <div className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${formData.category === 'family' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                                <div className={`border-2 rounded-lg p-3 sm:p-4 cursor-pointer transition-colors touch-manipulation ${formData.category === 'family' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
                                     }`} onClick={() => handleInputChange('category', 'family')}>
                                     <div className="flex items-center justify-between">
-                                        <div>
-                                            <h4 className="font-semibold text-lg">Family Run 2.5K</h4>
-                                            <p className="text-gray-600">Lari keluarga 2.5 kilometer</p>
-                                            <p className="text-primary font-semibold">{formatPrice(315000)}</p>
+                                        <div className="flex-1">
+                                            <h4 className="font-semibold text-base sm:text-lg">Family Run 2.5K</h4>
+                                            <p className="text-gray-600 text-sm sm:text-base">Lari keluarga 2.5 kilometer</p>
+                                            <p className="text-primary font-semibold text-sm sm:text-base">{formatPrice(315000)}</p>
                                         </div>
                                         <input
                                             type="radio"
@@ -425,7 +425,7 @@ export const Registration = () => {
                                             value="family"
                                             checked={formData.category === 'family'}
                                             onChange={() => handleInputChange('category', 'family')}
-                                            className="w-4 h-4 text-primary"
+                                            className="w-4 h-4 text-primary ml-2"
                                         />
                                     </div>
                                 </div>
@@ -530,7 +530,7 @@ export const Registration = () => {
                             <button
                                 onClick={nextStep}
                                 disabled={validatingReferral}
-                                className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+                                className="w-full bg-primary text-white py-3 sm:py-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 touch-manipulation"
                             >
                                 {validatingReferral && formData.packageType === 'community' ? (
                                     <div className="flex items-center justify-center">
@@ -546,10 +546,10 @@ export const Registration = () => {
 
                     {/* Step 2: Biodata */}
                     {currentStep === 2 && (
-                        <div className="space-y-6">
-                            <h3 className="text-2xl font-bold text-center mb-6">Isi Biodata</h3>
+                        <div className="space-y-4 sm:space-y-6">
+                            <h3 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Isi Biodata</h3>
 
-                            <div className="grid md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Nama Lengkap Pendaftar {formData.category === 'family' ? '(Nama Orang Tua)' : ''}*
@@ -597,11 +597,11 @@ export const Registration = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Ukuran Jersey {formData.category === 'family' ? '(Dewasa)' : ''} *
                                 </label>
-                                <div className="grid grid-cols-5 gap-3 mb-3">
+                                <div className="grid grid-cols-5 gap-2 sm:gap-3 mb-3">
                                     {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
                                         <label
                                             key={size}
-                                            className={`flex items-center justify-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${formData.shirtSize === size && !useCustomShirtSize
+                                            className={`flex items-center justify-center p-2 sm:p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors touch-manipulation ${formData.shirtSize === size && !useCustomShirtSize
                                                 ? 'bg-primary text-white border-primary'
                                                 : 'border-gray-300'
                                                 }`}
@@ -618,7 +618,7 @@ export const Registration = () => {
                                                 }}
                                                 className="sr-only"
                                             />
-                                            <span className="font-medium">{size}</span>
+                                            <span className="font-medium text-sm sm:text-base">{size}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -738,18 +738,18 @@ export const Registration = () => {
                                 </div>
                             )}
 
-                            <div className="flex gap-4">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                                 <button
                                     onClick={prevStep}
                                     disabled={validatingData}
-                                    className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors disabled:opacity-50"
+                                    className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors disabled:opacity-50 touch-manipulation"
                                 >
                                     Kembali
                                 </button>
                                 <button
                                     onClick={nextStep}
                                     disabled={validatingData}
-                                    className="flex-1 bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+                                    className="flex-1 bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 touch-manipulation"
                                 >
                                     {validatingData ? (
                                         <div className="flex items-center justify-center">
@@ -849,16 +849,16 @@ export const Registration = () => {
                                 )}
                             </div>
 
-                            <div className="flex gap-4">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                                 <button
                                     onClick={prevStep}
-                                    className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
+                                    className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors touch-manipulation"
                                 >
                                     Kembali
                                 </button>
                                 <button
                                     onClick={() => setShowConfirmation(true)}
-                                    className="flex-1 bg-accent text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+                                    className="flex-1 bg-accent text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors touch-manipulation"
                                 >
                                     Konfirmasi & Bayar
                                 </button>

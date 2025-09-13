@@ -4,7 +4,7 @@ import { getPrismaClient } from '@/lib/prisma';
 export async function GET(request: Request) {
   const prisma = getPrismaClient();
   const { searchParams } = new URL(request.url);
-  
+
   try {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
@@ -69,6 +69,123 @@ export async function GET(request: Request) {
     console.error('Failed to fetch registrations:', error);
     return NextResponse.json(
       { error: 'Failed to fetch registrations' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function PUT(request: Request) {
+  const prisma = getPrismaClient();
+
+  try {
+    const body = await request.json();
+    const { id, name, email, phone, category, packageType, shirtSize } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Registration ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Check if registration exists
+    const existingRegistration = await prisma.registration.findUnique({
+      where: { id: parseInt(id) }
+    });
+
+    if (!existingRegistration) {
+      return NextResponse.json(
+        { error: 'Registration not found' },
+        { status: 404 }
+      );
+    }
+
+    // Update registration
+    const updatedRegistration = await prisma.registration.update({
+      where: { id: parseInt(id) },
+      data: {
+        name,
+        email,
+        phone,
+        category,
+        packageType,
+        shirtSize,
+      },
+      include: {
+        payment: {
+          select: {
+            status: true,
+            amount: true,
+            merchantRef: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      message: 'Registration updated successfully',
+      registration: updatedRegistration,
+    });
+  } catch (error) {
+    console.error('Failed to update registration:', error);
+    return NextResponse.json(
+      { error: 'Failed to update registration' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function DELETE(request: Request) {
+  const prisma = getPrismaClient();
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  try {
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Registration ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Check if registration exists
+    const existingRegistration = await prisma.registration.findUnique({
+      where: { id: parseInt(id) },
+      include: { payment: true }
+    });
+
+    if (!existingRegistration) {
+      return NextResponse.json(
+        { error: 'Registration not found' },
+        { status: 404 }
+      );
+    }
+
+    // Delete associated payment first (if exists)
+    if (existingRegistration.payment) {
+      await prisma.payment.delete({
+        where: { registrationId: parseInt(id) }
+      });
+    }
+
+    // Delete registration
+    await prisma.registration.delete({
+      where: { id: parseInt(id) }
+    });
+
+    return NextResponse.json({
+      message: 'Registration deleted successfully',
+    });
+  } catch (error) {
+    console.error('Failed to delete registration:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete registration' },
       { status: 500 }
     );
   } finally {

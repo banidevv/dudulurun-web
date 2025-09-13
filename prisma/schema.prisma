@@ -17,7 +17,7 @@ datasource db {
 model Registration {
   id                   Int             @id @default(autoincrement())
   name                 String
-  email                String          @unique
+  email                String
   phone                String
   category             String
   packageType          String? // Stores the selected package type (e.g., 'full', 'basic', 'bibOnly', etc.)
