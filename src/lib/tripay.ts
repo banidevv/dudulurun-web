@@ -75,12 +75,12 @@ const isEarlyBirdPeriod = () => {
 const categoryPrices = {
   earlyBird: {
     fun: {
-      community: 195000,
+      community: 198000,
       general: 225000,
     },
     family: {
-      parentFull: 315000,    // Family Run 2.5K
-      parentBibOnly: 315000,  // Family Run 2.5K (same price)
+      parentFull: 312000,    // Family Run 2.5K
+      parentBibOnly: 312000,  // Family Run 2.5K (same price)
       childFull: 0,     // Included in family package
       childBibOnly: 0,   // Included in family package
     },
@@ -91,12 +91,12 @@ const categoryPrices = {
   },
   normal: {
     fun: {
-      community: 195000,
+      community: 198000,
       general: 225000,
     },
     family: {
-      parentFull: 315000,    // Family Run 2.5K
-      parentBibOnly: 315000,  // Family Run 2.5K (same price)
+      parentFull: 312000,    // Family Run 2.5K
+      parentBibOnly: 312000,  // Family Run 2.5K (same price)
       childFull: 0,     // Included in family package
       childBibOnly: 0,   // Included in family package
     },

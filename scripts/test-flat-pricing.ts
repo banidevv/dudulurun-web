@@ -26,7 +26,7 @@ async function testFlatPricing() {
         } else {
             console.log('❌ Referral validation failed');
             const errorData = await validationResponse.json();
-            
+
         }
         console.log();
 
@@ -36,17 +36,17 @@ async function testFlatPricing() {
         // Simulate pricing calculation
         const testScenarios = [
             { category: 'fun', packageType: 'general', expectedPrice: 225000 },
-            { category: 'fun', packageType: 'community', expectedPrice: 195000 },
-            { category: 'family', packageType: undefined, expectedPrice: 315000 }
+            { category: 'fun', packageType: 'community', expectedPrice: 198000 },
+            { category: 'family', packageType: undefined, expectedPrice: 312000 }
         ];
 
         testScenarios.forEach(scenario => {
             let calculatedPrice;
             if (scenario.category === 'fun') {
                 if (scenario.packageType === 'general') calculatedPrice = 225000;
-                if (scenario.packageType === 'community') calculatedPrice = 195000;
+                if (scenario.packageType === 'community') calculatedPrice = 198000;
             }
-            if (scenario.category === 'family') calculatedPrice = 315000;
+            if (scenario.category === 'family') calculatedPrice = 312000;
 
             const testResult = calculatedPrice === scenario.expectedPrice ? '✅ PASS' : '❌ FAIL';
             console.log(`   ${scenario.category} - ${scenario.packageType || 'N/A'}: ${testResult} (${calculatedPrice?.toLocaleString()} IDR)`);

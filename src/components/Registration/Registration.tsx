@@ -75,10 +75,10 @@ export const Registration = () => {
             if (formData.packageType === 'general') return 225000;
             if (formData.packageType === 'community') {
                 // For community package, price is always flat 195k when referral code is validated
-                return 195000;
+                return 198000;
             }
         }
-        if (formData.category === 'family') return 315000;
+        if (formData.category === 'family') return 312000;
         return 0;
     };
 
@@ -89,7 +89,7 @@ export const Registration = () => {
             if (formData.packageType === 'community') return 225000;
             if (formData.packageType === 'general') return 225000;
         }
-        if (formData.category === 'family') return 315000;
+        if (formData.category === 'family') return 312000;
         return 0;
     };
 
@@ -417,7 +417,7 @@ export const Registration = () => {
                                         <div className="flex-1">
                                             <h4 className="font-semibold text-base sm:text-lg">Family Run 2.5K</h4>
                                             <p className="text-gray-600 text-sm sm:text-base">Lari keluarga 2.5 kilometer</p>
-                                            <p className="text-primary font-semibold text-sm sm:text-base">{formatPrice(315000)}</p>
+                                            <p className="text-primary font-semibold text-sm sm:text-base">{formatPrice(312000)}</p>
                                         </div>
                                         <input
                                             type="radio"
@@ -459,7 +459,7 @@ export const Registration = () => {
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <h5 className="font-semibold">Community</h5>
-                                                <p className="text-primary font-semibold">{formatPrice(195000)}</p>
+                                                <p className="text-primary font-semibold">{formatPrice(198000)}</p>
                                             </div>
                                             <input
                                                 type="radio"
@@ -519,7 +519,7 @@ export const Registration = () => {
                                                 <p className="text-sm text-green-600">{validatedReferralCode.description}</p>
                                             )}
                                             <p className="text-sm text-green-700">
-                                                Harga Community: {formatPrice(195000)} •
+                                                Harga Community: {formatPrice(198000)} •
                                                 Tersisa: {validatedReferralCode.remainingClaims} klaim
                                             </p>
                                         </div>
@@ -779,11 +779,11 @@ export const Registration = () => {
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <span className="text-green-600 font-medium">Harga Community ({validatedReferralCode.name}):</span>
-                                            <span className="text-green-600 font-medium">{formatPrice(195000)}</span>
+                                            <span className="text-green-600 font-medium">{formatPrice(198000)}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <span className="text-green-600 font-medium">Hemat:</span>
-                                            <span className="text-green-600 font-medium">{formatPrice(calculateOriginalPrice() - 195000)}</span>
+                                            <span className="text-green-600 font-medium">{formatPrice(calculateOriginalPrice() - 198000)}</span>
                                         </div>
                                         <hr className="border-gray-300" />
                                         <div className="flex justify-between items-center">

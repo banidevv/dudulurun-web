@@ -119,12 +119,12 @@ export async function POST(request: Request) {
       // Calculate final amount - for community package, always use flat 195k
       let finalAmount;
       if (category === 'family') {
-        finalAmount = 315000;
+        finalAmount = 312000;
       } else if (packageType === 'general') {
         finalAmount = 225000;
       } else if (packageType === 'community') {
         // Community package is always flat 195k regardless of referral code
-        finalAmount = 195000;
+        finalAmount = 198000;
       } else {
         finalAmount = 225000; // Default fallback
       }

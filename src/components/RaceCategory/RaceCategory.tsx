@@ -49,7 +49,7 @@ export const RaceCategory: React.FC = () => {
                   <div className="text-xs sm:text-sm text-gray-600 font-medium">Umum</div>
                 </div>
                 <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-accent/5 to-accent/10 rounded-xl border border-accent/20">
-                  <div className="text-sm sm:text-lg font-bold text-accent mb-1">Rp 195.000</div>
+                  <div className="text-sm sm:text-lg font-bold text-accent mb-1">Rp 198.000</div>
                   <div className="text-xs sm:text-sm text-gray-600 font-medium">Komunitas</div>
                 </div>
               </div>
@@ -91,7 +91,7 @@ export const RaceCategory: React.FC = () => {
             </div>
             <div className="mt-6 sm:mt-8 p-4 bg-gray-50 rounded-lg">
               <div className="text-xs sm:text-sm text-gray-600 mb-2">Biaya Pendaftaran:</div>
-              <div className="text-xl sm:text-2xl font-bold text-primary">Rp 315.000</div>
+              <div className="text-xl sm:text-2xl font-bold text-primary">Rp 312.000</div>
               <div className="text-xs sm:text-sm text-gray-500">Per paket keluarga (1 Parent + 1 Child)</div>
             </div>
           </div>

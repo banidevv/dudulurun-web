@@ -54,21 +54,21 @@ async function testSimplifiedReferralSystem() {
                 category: 'fun',
                 packageType: 'community',
                 hasReferral: true,
-                expectedPrice: 195000,
+                expectedPrice: 198000,
                 description: 'Fun Run Community (with referral)'
             },
             {
                 category: 'family',
                 packageType: undefined,
                 hasReferral: false,
-                expectedPrice: 315000,
+                expectedPrice: 312000,
                 description: 'Family Run (no referral)'
             },
             {
                 category: 'family',
                 packageType: undefined,
                 hasReferral: true,
-                expectedPrice: 315000,
+                expectedPrice: 312000,
                 description: 'Family Run (with referral - same price)'
             }
         ];
@@ -77,9 +77,9 @@ async function testSimplifiedReferralSystem() {
             let calculatedPrice;
             if (scenario.category === 'fun') {
                 if (scenario.packageType === 'general') calculatedPrice = 225000;
-                if (scenario.packageType === 'community') calculatedPrice = 195000;
+                if (scenario.packageType === 'community') calculatedPrice = 198000;
             }
-            if (scenario.category === 'family') calculatedPrice = 315000;
+            if (scenario.category === 'family') calculatedPrice = 312000;
 
             const testResult = calculatedPrice === scenario.expectedPrice ? '✅ PASS' : '❌ FAIL';
             console.log(`   ${scenario.description}: ${testResult} (IDR ${calculatedPrice?.toLocaleString()})`);
