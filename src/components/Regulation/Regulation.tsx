@@ -60,7 +60,7 @@ export default function Regulation() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <i className="fa-solid fa-circle-check text-accent mt-1 text-sm flex-shrink-0"></i>
-                      <div className="text-gray-700 text-sm sm:text-base">Minimal usia 13 tahun ke atas.</div>
+                      <div className="text-gray-700 text-sm sm:text-base">Minimal usia 14 tahun ke atas.</div>
                     </div>
                     <div className="flex items-start space-x-3">
                       <i className="fa-solid fa-circle-check text-accent mt-1 text-sm flex-shrink-0"></i>
@@ -86,7 +86,7 @@ export default function Regulation() {
                     </div>
                     <div className="flex items-start space-x-3">
                       <i className="fa-solid fa-circle-check text-accent mt-1 text-sm flex-shrink-0"></i>
-                      <div className="text-gray-700 text-sm sm:text-base">Anak Min 5-12 th.</div>
+                      <div className="text-gray-700 text-sm sm:text-base">Anak usia 7-12 tahun.</div>
                     </div>
                   </div>
                 </div>

@@ -22,7 +22,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "Apakah ada hadiah untuk pemenang?",
-    answer: "Ya, ada hadiah untuk finisher tercepat 1,2 dan 3. Selain itu, akan ada doorprize menarik untuk semua peserta."
+    answer: "Ya, ada hadiah untuk finisher tercepat 1,2 dan 3*️. Selain itu, akan ada doorprize menarik untuk semua peserta."
   },
   {
     question: "Bagaimana jika hujan?",

@@ -12,13 +12,13 @@ import { Registration } from '@/components/Registration/Registration';
 
 export default function Home() {
 
-  return ( 
+  return (
     <main className="min-h-screen">
       <Navigation />
       <div id="beranda">
         <Hero
           title="MENANG KALAH DUDULURUN"
-          description="Bukan untuk jadi yang tercepat Tapi untuk menciptakan momen yang paling hangat"
+          description="Bukan untuk jadi yang tercepat tapi untuk menciptakan momen yang paling hangat"
           backgroundType="video"
           backgroundSrc="/video/footage.mp4"
           videoMobileFallback="/images/hero-bg.jpg"
