@@ -55,6 +55,10 @@ export async function GET(request: Request) {
                 'Category',
                 'Package Type',
                 'Shirt Size',
+                'Parent Size',
+                'Child Size',
+                'Custom Parent Size',
+                'Custom Child Size',
                 'Payment Status',
                 'Amount',
                 'Merchant Ref',
@@ -62,20 +66,36 @@ export async function GET(request: Request) {
                 'Payment Date'
             ];
 
-            const csvRows = registrations.map(reg => [
-                reg.id,
-                reg.name,
-                reg.email,
-                reg.phone,
-                reg.category,
-                reg.packageType || '',
-                reg.shirtSize || '',
-                reg.payment?.status || 'No Payment',
-                reg.payment?.amount || 0,
-                reg.payment?.merchantRef || '',
-                new Date(reg.createdAt).toLocaleDateString('id-ID'),
-                reg.payment?.createdAt ? new Date(reg.payment.createdAt).toLocaleDateString('id-ID') : ''
-            ]);
+            const csvRows = registrations.map(reg => {
+                // Extract parent and child sizes from familyPackageData
+                let parentSize = '';
+                let childSize = '';
+
+                if (reg.familyPackageData) {
+                    const familyData = reg.familyPackageData as any;
+                    parentSize = familyData.parentShirtSizes || '';
+                    childSize = familyData.childShirtSizes || '';
+                }
+
+                return [
+                    reg.id,
+                    reg.name,
+                    reg.email,
+                    reg.phone,
+                    reg.category,
+                    reg.packageType || '',
+                    reg.shirtSize || '',
+                    parentSize,
+                    childSize,
+                    reg.customShirtSize || '',
+                    reg.customChildShirtSize || '',
+                    reg.payment?.status || 'No Payment',
+                    reg.payment?.amount || 0,
+                    reg.payment?.merchantRef || '',
+                    new Date(reg.createdAt).toLocaleDateString('id-ID'),
+                    reg.payment?.createdAt ? new Date(reg.payment.createdAt).toLocaleDateString('id-ID') : ''
+                ];
+            });
 
             const csvContent = [
                 csvHeaders.join(','),
@@ -92,20 +112,36 @@ export async function GET(request: Request) {
 
         if (format === 'excel') {
             // For Excel format, we'll return JSON that can be processed by frontend
-            const excelData = registrations.map(reg => ({
-                'ID': reg.id,
-                'Name': reg.name,
-                'Email': reg.email,
-                'Phone': reg.phone,
-                'Category': reg.category,
-                'Package Type': reg.packageType || '',
-                'Shirt Size': reg.shirtSize || '',
-                'Payment Status': reg.payment?.status || 'No Payment',
-                'Amount': reg.payment?.amount || 0,
-                'Merchant Ref': reg.payment?.merchantRef || '',
-                'Registration Date': new Date(reg.createdAt).toLocaleDateString('id-ID'),
-                'Payment Date': reg.payment?.createdAt ? new Date(reg.payment.createdAt).toLocaleDateString('id-ID') : ''
-            }));
+            const excelData = registrations.map(reg => {
+                // Extract parent and child sizes from familyPackageData
+                let parentSize = '';
+                let childSize = '';
+
+                if (reg.familyPackageData) {
+                    const familyData = reg.familyPackageData as any;
+                    parentSize = familyData.parentShirtSizes || '';
+                    childSize = familyData.childShirtSizes || '';
+                }
+
+                return {
+                    'ID': reg.id,
+                    'Name': reg.name,
+                    'Email': reg.email,
+                    'Phone': reg.phone,
+                    'Category': reg.category,
+                    'Package Type': reg.packageType || '',
+                    'Shirt Size': reg.shirtSize || '',
+                    'Parent Size': parentSize,
+                    'Child Size': childSize,
+                    'Custom Parent Size': reg.customShirtSize || '',
+                    'Custom Child Size': reg.customChildShirtSize || '',
+                    'Payment Status': reg.payment?.status || 'No Payment',
+                    'Amount': reg.payment?.amount || 0,
+                    'Merchant Ref': reg.payment?.merchantRef || '',
+                    'Registration Date': new Date(reg.createdAt).toLocaleDateString('id-ID'),
+                    'Payment Date': reg.payment?.createdAt ? new Date(reg.payment.createdAt).toLocaleDateString('id-ID') : ''
+                };
+            });
 
             return NextResponse.json({
                 data: excelData,
