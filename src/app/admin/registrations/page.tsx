@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as XLSX from 'xlsx';
+import { encrypt } from '@/lib/encryption';
 
 interface Registration {
   id: number;
@@ -14,6 +15,14 @@ interface Registration {
   shirtSize: string | null;
   ticketUsed: boolean;
   createdAt: string;
+  familyPackageData: {
+    parentPackageType: string;
+    childPackageType: string;
+    parentCount: number;
+    childCount: number;
+    parentShirtSizes?: string;
+    childShirtSizes?: string;
+  } | null;
   payment: {
     status: string;
     amount: number;
@@ -117,6 +126,24 @@ export default function RegistrationsPage() {
       currency: 'IDR',
       minimumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const generateETicketUrl = (registrationId: number) => {
+    const encryptedId = encrypt(registrationId.toString());
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/qr-code/${encodeURIComponent(encryptedId)}`;
+  };
+
+  const copyETicketLink = async (registrationId: number) => {
+    console.log('Copying e-ticket link for registration:', registrationId);
+    try {
+      const url = generateETicketUrl(registrationId);
+      await navigator.clipboard.writeText(url);
+      // You could add a toast notification here
+      alert('E-ticket link copied to clipboard!');
+    } catch (err) {
+      console.log('Failed to copy e-ticket link:', err);
+      alert('Failed to copy e-ticket link');
+    }
   };
 
   // CRUD Functions
@@ -380,6 +407,9 @@ export default function RegistrationsPage() {
                   Payment Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-dudulurun-blue uppercase tracking-wider">
+                  E-ticket Link
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-dudulurun-blue uppercase tracking-wider">
                   Amount
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-dudulurun-blue uppercase tracking-wider">
@@ -433,9 +463,27 @@ export default function RegistrationsPage() {
                       <div className="text-sm text-dudulurun-teal">{registration.category}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-dudulurun-teal">{registration.packageType || '-'}</div>
-                      {registration.shirtSize && (
-                        <div className="text-sm text-dudulurun-blue">Size: {registration.shirtSize}</div>
+                      {registration.category === 'family' && registration.familyPackageData ? (
+                        <div className="text-sm text-dudulurun-teal">
+                          <div className="font-medium">Family Package</div>
+                          <div className="text-xs text-dudulurun-blue mt-1">
+                            <div>Parent: {registration.familyPackageData.parentPackageType}
+                              {registration.familyPackageData.parentShirtSizes &&
+                                ` (${registration.familyPackageData.parentShirtSizes})`}
+                            </div>
+                            <div>Child: {registration.familyPackageData.childPackageType}
+                              {registration.familyPackageData.childShirtSizes &&
+                                ` (${registration.familyPackageData.childShirtSizes})`}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-sm text-dudulurun-teal">{registration.packageType || '-'}</div>
+                          {registration.shirtSize && (
+                            <div className="text-sm text-dudulurun-blue">Size: {registration.shirtSize}</div>
+                          )}
+                        </>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -447,6 +495,19 @@ export default function RegistrationsPage() {
                         }`}>
                         {registration.payment?.status || 'No Payment'}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {registration.payment?.status === 'paid' ? (
+                        <button
+                          onClick={() => copyETicketLink(registration.id)}
+                          className="text-green-600 hover:text-green-900 text-sm font-medium"
+                          title="Copy E-ticket Link"
+                        >
+                          Copy E-ticket
+                        </button>
+                      ) : (
+                        '-'
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-dudulurun-teal">
@@ -474,6 +535,7 @@ export default function RegistrationsPage() {
                         >
                           Delete
                         </button>
+
                       </div>
                     </td>
                   </tr>
