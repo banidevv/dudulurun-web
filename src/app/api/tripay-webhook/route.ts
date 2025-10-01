@@ -27,7 +27,7 @@ function getStatusMessage(status: string, name: string, merchantRef: string, reg
     case 'paid':
       const encryptedId = encrypt(registrationId);
       const qrCodeUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/qr-code/${encodeURIComponent(encryptedId)}`;
-      return `Halo ${name}! 🎉\n\nPembayaran Anda untuk Dudulurun 2025 dengan nomor referensi ${merchantRef} telah berhasil!\n\nSilakan akses e-ticket Anda di link berikut:\n${qrCodeUrl}\n\nTerima kasih atas partisipasi Anda. Kami akan mengirimkan informasi lebih lanjut mengenai pengambilan race pack melalui email.\n\nSampai jumpa di garis start! 🏃‍♂️`;
+      return `Halo ${name}! 🎉\n\nPembayaran Anda untuk Dudulurun 2025 dengan nomor referensi ${merchantRef} telah berhasil!\n\nSilakan akses e-ticket Anda di link berikut:\n${qrCodeUrl}\n\nTerima kasih atas partisipasi Anda. Kami akan mengirimkan informasi lebih lanjut mengenai pengambilan race pack melalui email.\n\n *Jika link tidak bisa di klik, silahkan save kontak ini terlebih dahulu*\n\nSampai jumpa di garis start! 🏃‍♂️`;
     case 'expired':
       return `Halo ${name},\n\nMohon maaf, pembayaran Anda untuk Dudulurun 2025 dengan nomor referensi ${merchantRef} telah kedaluwarsa.\n\nJika Anda masih ingin berpartisipasi, silakan melakukan pendaftaran ulang di website kami.\n\nTerima kasih! 🙏`;
     case 'failed':
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'Invalid signature' },
         { status: 403 }
-      );   
+      );
     }
 
     // Parse and validate payload
