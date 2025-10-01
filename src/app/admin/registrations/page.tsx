@@ -654,6 +654,8 @@ function EditRegistrationForm({
     category: registration.category,
     packageType: registration.packageType || '',
     shirtSize: registration.shirtSize || '',
+    parentShirtSizes: registration.familyPackageData?.parentShirtSizes || '',
+    childShirtSizes: registration.familyPackageData?.childShirtSizes || '',
   });
 
   // Clear packageType when category changes away from fun-run
@@ -665,7 +667,35 @@ function EditRegistrationForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+
+    // Prepare the data to save
+    const dataToSave: any = { ...formData };
+
+    // If it's a family category, we need to handle family package data
+    if (formData.category === 'family') {
+      // Create or update family package data
+      const familyPackageData = {
+        parentPackageType: registration.familyPackageData?.parentPackageType || '',
+        childPackageType: registration.familyPackageData?.childPackageType || '',
+        parentCount: registration.familyPackageData?.parentCount || 0,
+        childCount: registration.familyPackageData?.childCount || 0,
+        parentShirtSizes: formData.parentShirtSizes,
+        childShirtSizes: formData.childShirtSizes,
+      };
+
+      // Add family package data to the save data
+      dataToSave.familyPackageData = familyPackageData;
+
+      // Remove individual shirt size fields for family category
+      delete dataToSave.shirtSize;
+    } else {
+      // For non-family categories, remove family-specific fields
+      delete dataToSave.parentShirtSizes;
+      delete dataToSave.childShirtSizes;
+      delete dataToSave.familyPackageData;
+    }
+
+    onSave(dataToSave);
   };
 
   return (
@@ -731,15 +761,40 @@ function EditRegistrationForm({
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Shirt Size</label>
-        <input
-          type="text"
-          value={formData.shirtSize}
-          onChange={(e) => setFormData(prev => ({ ...prev, shirtSize: e.target.value }))}
-          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-dudulurun-blue"
-        />
-      </div>
+      {formData.category === 'family' ? (
+        <>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Parent Shirt Sizes</label>
+            <input
+              type="text"
+              value={formData.parentShirtSizes}
+              onChange={(e) => setFormData(prev => ({ ...prev, parentShirtSizes: e.target.value }))}
+              placeholder="e.g., L, XL, M"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-dudulurun-blue"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Child Shirt Sizes</label>
+            <input
+              type="text"
+              value={formData.childShirtSizes}
+              onChange={(e) => setFormData(prev => ({ ...prev, childShirtSizes: e.target.value }))}
+              placeholder="e.g., S, M, L"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-dudulurun-blue"
+            />
+          </div>
+        </>
+      ) : (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Shirt Size</label>
+          <input
+            type="text"
+            value={formData.shirtSize}
+            onChange={(e) => setFormData(prev => ({ ...prev, shirtSize: e.target.value }))}
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-dudulurun-blue"
+          />
+        </div>
+      )}
 
       <div className="flex gap-3 justify-end pt-4">
         <button

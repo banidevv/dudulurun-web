@@ -81,7 +81,7 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, name, email, phone, category, packageType, shirtSize } = body;
+    const { id, name, email, phone, category, packageType, shirtSize, familyPackageData } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -102,17 +102,25 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Prepare update data
+    const updateData: any = {
+      name,
+      email,
+      phone,
+      category,
+      packageType,
+      shirtSize,
+    };
+
+    // Add family package data if provided
+    if (familyPackageData) {
+      updateData.familyPackageData = familyPackageData;
+    }
+
     // Update registration
     const updatedRegistration = await prisma.registration.update({
       where: { id: parseInt(id) },
-      data: {
-        name,
-        email,
-        phone,
-        category,
-        packageType,
-        shirtSize,
-      },
+      data: updateData,
       include: {
         payment: {
           select: {
