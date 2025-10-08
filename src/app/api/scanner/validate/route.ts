@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getPrismaClient } from '@/lib/prisma';
 import { sendWhatsAppMessage } from '@/lib/onesender';
+import { uploadToSupabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   const prisma = getPrismaClient();
@@ -218,19 +219,10 @@ Semoga sukses! 🏃‍♀️🏃‍♂️`;
 
     // Generate unique filename
     const fileName = `racepack_${registration.id}_${Date.now()}.${finalExt}`;
-    const path = require('path');
-    const fs = require('fs');
-    const publicDir = path.join(process.cwd(), 'public', 'race-packs');
-    if (!fs.existsSync(publicDir)) {
-      fs.mkdirSync(publicDir, { recursive: true });
-    }
-    const filePath = path.join(publicDir, fileName);
 
-    // Write file
-    fs.writeFileSync(filePath, finalBuffer);
-
-    // Set the public URL path for storage in DB
-    const racePackPhotoUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/race-packs/${fileName}`;
+    // Upload to Supabase Storage
+    const uploadResult = await uploadToSupabase(finalBuffer, fileName);
+    const racePackPhotoUrl = uploadResult.url;
 
     // Mark ticket as used
     await prisma.race.create({
