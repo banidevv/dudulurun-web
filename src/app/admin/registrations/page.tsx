@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import * as XLSX from 'xlsx';
 import { encrypt } from '@/lib/encryption';
 
-interface Registration {
+interface  Registration {
   id: number;
   name: string;
   email: string;

@@ -28,8 +28,7 @@ model Registration {
   voucherCode          String? // Voucher code for community Fun Run 5K (legacy)
   referralCodeId       Int? // New referral code system
   // Family package data
-  familyPackageData    Json? // Stores parent and child package details for family category
-  ticketUsed           Boolean         @default(false)
+  familyPackageData    Json?
   // Referral tracking
   referralSource       String? // e.g., 'facebook_ads', 'organic', etc.
   fbclid               String? // Facebook Click ID
@@ -41,6 +40,7 @@ model Registration {
   payment              Payment?
   referralCode         ReferralCode?   @relation(fields: [referralCodeId], references: [id])
   referralUsage        ReferralUsage[]
+  race                 Race?          
 }
 
 model Payment {
@@ -124,3 +124,16 @@ model ReferralUsage {
 
   @@unique([referralCodeId, registrationId])
 }
+
+model Race {
+  id        Int      @id
+
+  racePackPhotoUrl String
+  checkedIn Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registration Registration @relation(fields: [registrationId], references: [id])
+  registrationId Int @unique
+} 

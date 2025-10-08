@@ -69,7 +69,8 @@ export default async function QRCodePage({ params }: { params: { registrationId:
     const registration = await prisma.registration.findUnique({
       where: { id: parseInt(decryptedId, 10) },
       include: {
-        payment: true
+        payment: true,
+        race: true,
       }
     });
 
@@ -82,7 +83,9 @@ export default async function QRCodePage({ params }: { params: { registrationId:
       name: registration.name,
       category: registration.category,
       packageType: registration.packageType,
-      familyPackageData: registration.familyPackageData
+      familyPackageData: registration.familyPackageData,
+      racePackPhotoUrl: registration.race?.racePackPhotoUrl,
+      ticketUsed: registration.race ? true : false,
     });
 
     const qrCodeUrl = await generateQRCode(qrCodeData);
@@ -172,8 +175,19 @@ export default async function QRCodePage({ params }: { params: { registrationId:
                     )}
 
                     <div className="text-gray-600">Status Tiket</div>
-                    <div className={`font-medium text-right ${registration.ticketUsed ? 'text-red-500' : 'text-green-500'}`}>
-                      {registration.ticketUsed ? 'Sudah Digunakan' : 'Belum Digunakan'}
+                    {registration.race && (
+                      <>
+                        <div className="text-gray-600">Foto Race Pack</div>
+                        <div className="font-medium text-right text-dudulurun-teal">
+                          <img src={registration.race.racePackPhotoUrl} alt="Race Pack" className="w-24 h-24" />
+                        </div>
+                        <div className="text-gray-600">No. BIB</div>
+                        <div className="font-medium text-right text-dudulurun-teal">{registration.race.id}</div>
+                      </>
+                    )}
+
+                    <div className={`font-medium text-right ${registration.race ? registration.race.checkedIn ? 'text-green-500' : 'text-red-500' : 'text-red-500'}`}>
+                      {registration.race ? registration.race.checkedIn ? 'Siap untuk Race!' : 'Belum Check In' : 'Belum Ambil Race Pack'}
                     </div>
                   </div>
                 </div>

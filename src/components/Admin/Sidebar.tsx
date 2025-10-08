@@ -20,8 +20,8 @@ const Sidebar = () => {
       path: '/admin/registrations',
     },
     {
-      title: 'Payments',
-      path: '/admin/payments',
+      title: 'Race',
+      path: '/admin/race',
     },
     {
       title: 'Referral Codes',

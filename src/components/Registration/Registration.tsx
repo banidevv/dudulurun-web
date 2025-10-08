@@ -54,6 +54,9 @@ export const Registration = () => {
     const [useCustomShirtSize, setUseCustomShirtSize] = useState(false);
     const [useCustomChildShirtSize, setUseCustomChildShirtSize] = useState(false);
 
+    // Registration status - set to false to close registration
+    const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
+
     const [formData, setFormData] = useState<FormData>({
         category: '',
         packageType: '',
@@ -366,336 +369,290 @@ export const Registration = () => {
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">Daftar Sekarang</h2>
                 </div>
 
-                <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-2xl p-4 sm:p-6 lg:p-8 text-gray-900">
-                    {/* Progress Steps */}
-                    <div className="flex justify-between items-center mb-6 sm:mb-8">
-                        {[1, 2, 3].map((step) => (
-                            <div key={step} className="flex items-center flex-1">
-                                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-semibold text-sm sm:text-base ${currentStep >= step ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
-                                    }`}>
-                                    {step}
+                <div className="max-w-2xl mx-auto relative">
+                    {/* Registration Overlay */}
+                    {!isRegistrationOpen && (
+                        <div className="absolute inset-0 bg-black bg-opacity-75 rounded-lg shadow-2xl z-10 flex items-center justify-center">
+                            <div className="text-center text-white p-8">
+                                <div className="mb-6">
+                                    <svg className="w-16 h-16 mx-auto mb-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                                    </svg>
                                 </div>
-                                <div className={`ml-2 sm:ml-3 text-xs sm:text-sm ${currentStep >= step ? 'text-primary' : 'text-gray-500'} hidden sm:block`}>
-                                    {step === 1 && 'Pilih Kategori'}
-                                    {step === 2 && 'Biodata'}
-                                    {step === 3 && 'Pembayaran'}
-                                </div>
-                                {step < 3 && <div className={`w-8 sm:w-16 h-0.5 ml-2 sm:ml-4 ${currentStep > step ? 'bg-primary' : 'bg-gray-200'
-                                    }`} />}
+                                <h3 className="text-2xl font-bold mb-4">Pendaftaran Ditutup</h3>
+                                <p className="text-lg mb-2">Maaf, pendaftaran untuk DUDULURUN 2025 telah ditutup.</p>
+                                <p className="text-sm opacity-90">Terima kasih atas minat Anda. Sampai jumpa di event berikutnya!</p>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Step 1: Category Selection */}
-                    {currentStep === 1 && (
-                        <div className="space-y-4 sm:space-y-6">
-                            <h3 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Pilih Kategori Lomba</h3>
-
-                            {/* Category Selection */}
-                            <div className="space-y-3 sm:space-y-4">
-                                <div className={`border-2 rounded-lg p-3 sm:p-4 cursor-pointer transition-colors touch-manipulation ${formData.category === 'fun' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
-                                    }`} onClick={() => handleInputChange('category', 'fun')}>
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex-1">
-                                            <h4 className="font-semibold text-base sm:text-lg">Fun Run 5K</h4>
-                                            <p className="text-gray-600 text-sm sm:text-base">Lari santai 5 kilometer</p>
-                                        </div>
-                                        <input
-                                            type="radio"
-                                            name="category"
-                                            value="fun"
-                                            checked={formData.category === 'fun'}
-                                            onChange={() => handleInputChange('category', 'fun')}
-                                            className="w-4 h-4 text-primary ml-2"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className={`border-2 rounded-lg p-3 sm:p-4 cursor-pointer transition-colors touch-manipulation ${formData.category === 'family' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
-                                    }`} onClick={() => handleInputChange('category', 'family')}>
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex-1">
-                                            <h4 className="font-semibold text-base sm:text-lg">Family Run 2.5K</h4>
-                                            <p className="text-gray-600 text-sm sm:text-base">Lari keluarga 2.5 kilometer</p>
-                                            <p className="text-primary font-semibold text-sm sm:text-base">{formatPrice(312000)}</p>
-                                        </div>
-                                        <input
-                                            type="radio"
-                                            name="category"
-                                            value="family"
-                                            checked={formData.category === 'family'}
-                                            onChange={() => handleInputChange('category', 'family')}
-                                            className="w-4 h-4 text-primary ml-2"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Fun Run Package Type */}
-                            {formData.category === 'fun' && (
-                                <div className="space-y-4 mt-6">
-                                    <h4 className="font-semibold">Pilih Jenis Paket:</h4>
-
-                                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${formData.packageType === 'general' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
-                                        }`} onClick={() => handleInputChange('packageType', 'general')}>
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <h5 className="font-semibold">Umum</h5>
-                                                <p className="text-primary font-semibold">{formatPrice(225000)}</p>
-                                            </div>
-                                            <input
-                                                type="radio"
-                                                name="packageType"
-                                                value="general"
-                                                checked={formData.packageType === 'general'}
-                                                onChange={() => handleInputChange('packageType', 'general')}
-                                                className="w-4 h-4 text-primary"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${formData.packageType === 'community' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
-                                        }`} onClick={() => handleInputChange('packageType', 'community')}>
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <h5 className="font-semibold">Community</h5>
-                                                <p className="text-primary font-semibold">{formatPrice(198000)}</p>
-                                            </div>
-                                            <input
-                                                type="radio"
-                                                name="packageType"
-                                                value="community"
-                                                checked={formData.packageType === 'community'}
-                                                onChange={() => handleInputChange('packageType', 'community')}
-                                                className="w-4 h-4 text-primary"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Community Referral */}
-                            {formData.packageType === 'community' && (
-                                <div className="mt-6">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Kode Referral Community *
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            value={formData.communityReferral}
-                                            onChange={(e) => handleInputChange('communityReferral', e.target.value)}
-                                            onBlur={() => {
-                                                if (formData.communityReferral && formData.category) {
-                                                    validateReferralCode(formData.communityReferral, formData.category);
-                                                }
-                                            }}
-                                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent ${referralError
-                                                ? 'border-red-300 focus:ring-red-500'
-                                                : validatedReferralCode
-                                                    ? 'border-green-300 focus:ring-green-500'
-                                                    : 'border-gray-300 focus:ring-primary'
-                                                }`}
-                                            placeholder="Masukkan kode referral"
-                                            required
-                                        />
-                                        {validatingReferral && (
-                                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                                                <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {referralError && (
-                                        <p className="mt-2 text-sm text-red-600">{referralError}</p>
-                                    )}
-
-                                    {validatedReferralCode && (
-                                        <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                                            <p className="text-sm text-green-800 font-medium">
-                                                ✓ {validatedReferralCode.name}
-                                            </p>
-                                            {validatedReferralCode.description && (
-                                                <p className="text-sm text-green-600">{validatedReferralCode.description}</p>
-                                            )}
-                                            <p className="text-sm text-green-700">
-                                                Harga Community: {formatPrice(198000)} •
-                                                Tersisa: {validatedReferralCode.remainingClaims} klaim
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            <button
-                                onClick={nextStep}
-                                disabled={validatingReferral}
-                                className="w-full bg-primary text-white py-3 sm:py-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 touch-manipulation"
-                            >
-                                {validatingReferral && formData.packageType === 'community' ? (
-                                    <div className="flex items-center justify-center">
-                                        <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                        Memvalidasi Kode Referral...
-                                    </div>
-                                ) : (
-                                    'Lanjut ke Biodata'
-                                )}
-                            </button>
                         </div>
                     )}
 
-                    {/* Step 2: Biodata */}
-                    {currentStep === 2 && (
-                        <div className="space-y-4 sm:space-y-6">
-                            <h3 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Isi Biodata</h3>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Nama Lengkap Pendaftar {formData.category === 'family' ? '(Nama Orang Tua)' : ''}*
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={(e) => handleInputChange('name', e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder="Masukkan nama lengkap"
-                                        required
-                                    />
+                    <div className="bg-white rounded-lg shadow-2xl p-4 sm:p-6 lg:p-8 text-gray-900">
+                        {/* Progress Steps */}
+                        <div className="flex justify-between items-center mb-6 sm:mb-8">
+                            {[1, 2, 3].map((step) => (
+                                <div key={step} className="flex items-center flex-1">
+                                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-semibold text-sm sm:text-base ${currentStep >= step ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
+                                        }`}>
+                                        {step}
+                                    </div>
+                                    <div className={`ml-2 sm:ml-3 text-xs sm:text-sm ${currentStep >= step ? 'text-primary' : 'text-gray-500'} hidden sm:block`}>
+                                        {step === 1 && 'Pilih Kategori'}
+                                        {step === 2 && 'Biodata'}
+                                        {step === 3 && 'Pembayaran'}
+                                    </div>
+                                    {step < 3 && <div className={`w-8 sm:w-16 h-0.5 ml-2 sm:ml-4 ${currentStep > step ? 'bg-primary' : 'bg-gray-200'
+                                        }`} />}
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Email *
-                                    </label>
-                                    <input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={(e) => handleInputChange('email', e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder="nama@email.com"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                            ))}
+                        </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Nomor Telepon *
-                                </label>
-                                <input
-                                    type="tel"
-                                    value={formData.phone}
-                                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    placeholder="08xxxxxxxxxx"
-                                    required
-                                />
-                            </div>
+                        {/* Step 1: Category Selection */}
+                        {currentStep === 1 && (
+                            <div className="space-y-4 sm:space-y-6">
+                                <h3 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Pilih Kategori Lomba</h3>
 
-                            {/* Jersey Size */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Ukuran Jersey {formData.category === 'family' ? '(Dewasa)' : ''} *
-                                </label>
-                                <div className="grid grid-cols-5 gap-2 sm:gap-3 mb-3">
-                                    {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
-                                        <label
-                                            key={size}
-                                            className={`flex items-center justify-center p-2 sm:p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors touch-manipulation ${formData.shirtSize === size && !useCustomShirtSize
-                                                ? 'bg-primary text-white border-primary'
-                                                : 'border-gray-300'
-                                                }`}
-                                        >
+                                {/* Category Selection */}
+                                <div className="space-y-3 sm:space-y-4">
+                                    <div className={`border-2 rounded-lg p-3 sm:p-4 cursor-pointer transition-colors touch-manipulation ${formData.category === 'fun' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                                        }`} onClick={() => handleInputChange('category', 'fun')}>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex-1">
+                                                <h4 className="font-semibold text-base sm:text-lg">Fun Run 5K</h4>
+                                                <p className="text-gray-600 text-sm sm:text-base">Lari santai 5 kilometer</p>
+                                            </div>
                                             <input
                                                 type="radio"
-                                                name="shirtSize"
-                                                value={size}
-                                                checked={formData.shirtSize === size && !useCustomShirtSize}
-                                                onChange={(e) => {
-                                                    handleInputChange('shirtSize', e.target.value);
-                                                    setUseCustomShirtSize(false);
-                                                    setFormData(prev => ({ ...prev, customShirtSize: '' }));
-                                                }}
-                                                className="sr-only"
+                                                name="category"
+                                                value="fun"
+                                                checked={formData.category === 'fun'}
+                                                onChange={() => handleInputChange('category', 'fun')}
+                                                className="w-4 h-4 text-primary ml-2"
                                             />
-                                            <span className="font-medium text-sm sm:text-base">{size}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className={`border-2 rounded-lg p-3 sm:p-4 cursor-pointer transition-colors touch-manipulation ${formData.category === 'family' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                                        }`} onClick={() => handleInputChange('category', 'family')}>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex-1">
+                                                <h4 className="font-semibold text-base sm:text-lg">Family Run 2.5K</h4>
+                                                <p className="text-gray-600 text-sm sm:text-base">Lari keluarga 2.5 kilometer</p>
+                                                <p className="text-primary font-semibold text-sm sm:text-base">{formatPrice(312000)}</p>
+                                            </div>
+                                            <input
+                                                type="radio"
+                                                name="category"
+                                                value="family"
+                                                checked={formData.category === 'family'}
+                                                onChange={() => handleInputChange('category', 'family')}
+                                                className="w-4 h-4 text-primary ml-2"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Fun Run Package Type */}
+                                {formData.category === 'fun' && (
+                                    <div className="space-y-4 mt-6">
+                                        <h4 className="font-semibold">Pilih Jenis Paket:</h4>
+
+                                        <div className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${formData.packageType === 'general' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                                            }`} onClick={() => handleInputChange('packageType', 'general')}>
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <h5 className="font-semibold">Umum</h5>
+                                                    <p className="text-primary font-semibold">{formatPrice(225000)}</p>
+                                                </div>
+                                                <input
+                                                    type="radio"
+                                                    name="packageType"
+                                                    value="general"
+                                                    checked={formData.packageType === 'general'}
+                                                    onChange={() => handleInputChange('packageType', 'general')}
+                                                    className="w-4 h-4 text-primary"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${formData.packageType === 'community' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'
+                                            }`} onClick={() => handleInputChange('packageType', 'community')}>
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <h5 className="font-semibold">Community</h5>
+                                                    <p className="text-primary font-semibold">{formatPrice(198000)}</p>
+                                                </div>
+                                                <input
+                                                    type="radio"
+                                                    name="packageType"
+                                                    value="community"
+                                                    checked={formData.packageType === 'community'}
+                                                    onChange={() => handleInputChange('packageType', 'community')}
+                                                    className="w-4 h-4 text-primary"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Community Referral */}
+                                {formData.packageType === 'community' && (
+                                    <div className="mt-6">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Kode Referral Community *
                                         </label>
-                                    ))}
-                                </div>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={formData.communityReferral}
+                                                onChange={(e) => handleInputChange('communityReferral', e.target.value)}
+                                                onBlur={() => {
+                                                    if (formData.communityReferral && formData.category) {
+                                                        validateReferralCode(formData.communityReferral, formData.category);
+                                                    }
+                                                }}
+                                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent ${referralError
+                                                    ? 'border-red-300 focus:ring-red-500'
+                                                    : validatedReferralCode
+                                                        ? 'border-green-300 focus:ring-green-500'
+                                                        : 'border-gray-300 focus:ring-primary'
+                                                    }`}
+                                                placeholder="Masukkan kode referral"
+                                                required
+                                            />
+                                            {validatingReferral && (
+                                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                                    <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                                </div>
+                                            )}
+                                        </div>
 
-                                {/* Custom Size Option */}
-                                <div className="flex items-center space-x-3">
-                                    <label className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            name="shirtSize"
-                                            checked={useCustomShirtSize}
-                                            onChange={() => {
-                                                setUseCustomShirtSize(true);
-                                                setFormData(prev => ({ ...prev, shirtSize: '' }));
-                                            }}
-                                            className="w-4 h-4 text-primary"
-                                        />
-                                        <span className="ml-2 text-sm text-gray-700">Ukuran Kustom</span>
-                                    </label>
-                                </div>
+                                        {referralError && (
+                                            <p className="mt-2 text-sm text-red-600">{referralError}</p>
+                                        )}
 
-                                {useCustomShirtSize && (
-                                    <div className="mt-3">
+                                        {validatedReferralCode && (
+                                            <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                                <p className="text-sm text-green-800 font-medium">
+                                                    ✓ {validatedReferralCode.name}
+                                                </p>
+                                                {validatedReferralCode.description && (
+                                                    <p className="text-sm text-green-600">{validatedReferralCode.description}</p>
+                                                )}
+                                                <p className="text-sm text-green-700">
+                                                    Harga Community: {formatPrice(198000)} •
+                                                    Tersisa: {validatedReferralCode.remainingClaims} klaim
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={nextStep}
+                                    disabled={validatingReferral}
+                                    className="w-full bg-primary text-white py-3 sm:py-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 touch-manipulation"
+                                >
+                                    {validatingReferral && formData.packageType === 'community' ? (
+                                        <div className="flex items-center justify-center">
+                                            <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                            Memvalidasi Kode Referral...
+                                        </div>
+                                    ) : (
+                                        'Lanjut ke Biodata'
+                                    )}
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Step 2: Biodata */}
+                        {currentStep === 2 && (
+                            <div className="space-y-4 sm:space-y-6">
+                                <h3 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Isi Biodata</h3>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Nama Lengkap Pendaftar {formData.category === 'family' ? '(Nama Orang Tua)' : ''}*
+                                        </label>
                                         <input
                                             type="text"
-                                            value={formData.customShirtSize}
-                                            onChange={(e) => handleInputChange('customShirtSize', e.target.value)}
+                                            value={formData.name}
+                                            onChange={(e) => handleInputChange('name', e.target.value)}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                            placeholder="Masukkan ukuran jersey kustom (contoh: XXL, 3XL, dll)"
+                                            placeholder="Masukkan nama lengkap"
                                             required
                                         />
                                     </div>
-                                )}
-                            </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Email *
+                                        </label>
+                                        <input
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                            placeholder="nama@email.com"
+                                            required
+                                        />
+                                    </div>
+                                </div>
 
-                            {/* Child Jersey Size for Family Run */}
-                            {formData.category === 'family' && (
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Ukuran Jersey Anak *
+                                        Nomor Telepon *
                                     </label>
-                                    <div className="grid grid-cols-5 gap-3 mb-3">
+                                    <input
+                                        type="tel"
+                                        value={formData.phone}
+                                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        placeholder="08xxxxxxxxxx"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Jersey Size */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Ukuran Jersey {formData.category === 'family' ? '(Dewasa)' : ''} *
+                                    </label>
+                                    <div className="grid grid-cols-5 gap-2 sm:gap-3 mb-3">
                                         {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
                                             <label
                                                 key={size}
-                                                className={`flex items-center justify-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${formData.childShirtSize === size && !useCustomChildShirtSize
+                                                className={`flex items-center justify-center p-2 sm:p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors touch-manipulation ${formData.shirtSize === size && !useCustomShirtSize
                                                     ? 'bg-primary text-white border-primary'
                                                     : 'border-gray-300'
                                                     }`}
                                             >
                                                 <input
                                                     type="radio"
-                                                    name="childShirtSize"
+                                                    name="shirtSize"
                                                     value={size}
-                                                    checked={formData.childShirtSize === size && !useCustomChildShirtSize}
+                                                    checked={formData.shirtSize === size && !useCustomShirtSize}
                                                     onChange={(e) => {
-                                                        handleInputChange('childShirtSize', e.target.value);
-                                                        setUseCustomChildShirtSize(false);
-                                                        setFormData(prev => ({ ...prev, customChildShirtSize: '' }));
+                                                        handleInputChange('shirtSize', e.target.value);
+                                                        setUseCustomShirtSize(false);
+                                                        setFormData(prev => ({ ...prev, customShirtSize: '' }));
                                                     }}
                                                     className="sr-only"
                                                 />
-                                                <span className="font-medium">{size}</span>
+                                                <span className="font-medium text-sm sm:text-base">{size}</span>
                                             </label>
                                         ))}
                                     </div>
 
-                                    {/* Custom Child Size Option */}
-                                    <div className="flex items-center space-x-3 mb-3">
+                                    {/* Custom Size Option */}
+                                    <div className="flex items-center space-x-3">
                                         <label className="flex items-center">
                                             <input
                                                 type="radio"
-                                                name="childShirtSize"
-                                                checked={useCustomChildShirtSize}
+                                                name="shirtSize"
+                                                checked={useCustomShirtSize}
                                                 onChange={() => {
-                                                    setUseCustomChildShirtSize(true);
-                                                    setFormData(prev => ({ ...prev, childShirtSize: '' }));
+                                                    setUseCustomShirtSize(true);
+                                                    setFormData(prev => ({ ...prev, shirtSize: '' }));
                                                 }}
                                                 className="w-4 h-4 text-primary"
                                             />
@@ -703,252 +660,316 @@ export const Registration = () => {
                                         </label>
                                     </div>
 
-                                    {useCustomChildShirtSize && (
-                                        <div className="mb-4">
+                                    {useCustomShirtSize && (
+                                        <div className="mt-3">
                                             <input
                                                 type="text"
-                                                value={formData.customChildShirtSize}
-                                                onChange={(e) => handleInputChange('customChildShirtSize', e.target.value)}
+                                                value={formData.customShirtSize}
+                                                onChange={(e) => handleInputChange('customShirtSize', e.target.value)}
                                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                                placeholder="Masukkan ukuran jersey anak kustom (contoh: XXL, 3XL, dll)"
+                                                placeholder="Masukkan ukuran jersey kustom (contoh: XXL, 3XL, dll)"
                                                 required
                                             />
                                         </div>
                                     )}
                                 </div>
-                            )}
 
-                            {/* Child Age for Family Run */}
-                            {formData.category === 'family' && (
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Umur Anak *
-                                    </label>
-                                    <input
-                                        type="number"
-                                        min="7"
-                                        max="13"
-                                        value={formData.childAge}
-                                        onChange={(e) => handleInputChange('childAge', e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder="Masukkan umur anak (7-13 tahun)"
-                                        required
-                                    />
-                                    <p className="mt-1 text-sm text-gray-500">Umur anak harus antara 7-13 tahun</p>
+                                {/* Child Jersey Size for Family Run */}
+                                {formData.category === 'family' && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Ukuran Jersey Anak *
+                                        </label>
+                                        <div className="grid grid-cols-5 gap-3 mb-3">
+                                            {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
+                                                <label
+                                                    key={size}
+                                                    className={`flex items-center justify-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${formData.childShirtSize === size && !useCustomChildShirtSize
+                                                        ? 'bg-primary text-white border-primary'
+                                                        : 'border-gray-300'
+                                                        }`}
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        name="childShirtSize"
+                                                        value={size}
+                                                        checked={formData.childShirtSize === size && !useCustomChildShirtSize}
+                                                        onChange={(e) => {
+                                                            handleInputChange('childShirtSize', e.target.value);
+                                                            setUseCustomChildShirtSize(false);
+                                                            setFormData(prev => ({ ...prev, customChildShirtSize: '' }));
+                                                        }}
+                                                        className="sr-only"
+                                                    />
+                                                    <span className="font-medium">{size}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+
+                                        {/* Custom Child Size Option */}
+                                        <div className="flex items-center space-x-3 mb-3">
+                                            <label className="flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="childShirtSize"
+                                                    checked={useCustomChildShirtSize}
+                                                    onChange={() => {
+                                                        setUseCustomChildShirtSize(true);
+                                                        setFormData(prev => ({ ...prev, childShirtSize: '' }));
+                                                    }}
+                                                    className="w-4 h-4 text-primary"
+                                                />
+                                                <span className="ml-2 text-sm text-gray-700">Ukuran Kustom</span>
+                                            </label>
+                                        </div>
+
+                                        {useCustomChildShirtSize && (
+                                            <div className="mb-4">
+                                                <input
+                                                    type="text"
+                                                    value={formData.customChildShirtSize}
+                                                    onChange={(e) => handleInputChange('customChildShirtSize', e.target.value)}
+                                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                    placeholder="Masukkan ukuran jersey anak kustom (contoh: XXL, 3XL, dll)"
+                                                    required
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Child Age for Family Run */}
+                                {formData.category === 'family' && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Umur Anak *
+                                        </label>
+                                        <input
+                                            type="number"
+                                            min="7"
+                                            max="13"
+                                            value={formData.childAge}
+                                            onChange={(e) => handleInputChange('childAge', e.target.value)}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                            placeholder="Masukkan umur anak (7-13 tahun)"
+                                            required
+                                        />
+                                        <p className="mt-1 text-sm text-gray-500">Umur anak harus antara 7-13 tahun</p>
+                                    </div>
+                                )}
+
+                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                                    <button
+                                        onClick={prevStep}
+                                        disabled={validatingData}
+                                        className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors disabled:opacity-50 touch-manipulation"
+                                    >
+                                        Kembali
+                                    </button>
+                                    <button
+                                        onClick={nextStep}
+                                        disabled={validatingData}
+                                        className="flex-1 bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 touch-manipulation"
+                                    >
+                                        {validatingData ? (
+                                            <div className="flex items-center justify-center">
+                                                <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                Memvalidasi...
+                                            </div>
+                                        ) : (
+                                            'Lanjut ke Pembayaran'
+                                        )}
+                                    </button>
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                                <button
-                                    onClick={prevStep}
-                                    disabled={validatingData}
-                                    className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors disabled:opacity-50 touch-manipulation"
-                                >
-                                    Kembali
-                                </button>
-                                <button
-                                    onClick={nextStep}
-                                    disabled={validatingData}
-                                    className="flex-1 bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 touch-manipulation"
-                                >
-                                    {validatingData ? (
-                                        <div className="flex items-center justify-center">
-                                            <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                            Memvalidasi...
+                        {/* Step 3: Payment Method */}
+                        {currentStep === 3 && (
+                            <div className="space-y-6">
+                                <h3 className="text-2xl font-bold text-center mb-6">Pilih Metode Pembayaran</h3>
+
+                                {/* Price Summary */}
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    {formData.packageType === 'community' && validatedReferralCode ? (
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-gray-600">Harga Normal (Umum):</span>
+                                                <span className="text-gray-600 line-through">{formatPrice(calculateOriginalPrice())}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-green-600 font-medium">Harga Community ({validatedReferralCode.name}):</span>
+                                                <span className="text-green-600 font-medium">{formatPrice(198000)}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-green-600 font-medium">Hemat:</span>
+                                                <span className="text-green-600 font-medium">{formatPrice(calculateOriginalPrice() - 198000)}</span>
+                                            </div>
+                                            <hr className="border-gray-300" />
+                                            <div className="flex justify-between items-center">
+                                                <span className="font-semibold">Total Pembayaran:</span>
+                                                <span className="text-2xl font-bold text-primary">{formatPrice(calculatePrice())}</span>
+                                            </div>
                                         </div>
                                     ) : (
-                                        'Lanjut ke Pembayaran'
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Step 3: Payment Method */}
-                    {currentStep === 3 && (
-                        <div className="space-y-6">
-                            <h3 className="text-2xl font-bold text-center mb-6">Pilih Metode Pembayaran</h3>
-
-                            {/* Price Summary */}
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                {formData.packageType === 'community' && validatedReferralCode ? (
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-gray-600">Harga Normal (Umum):</span>
-                                            <span className="text-gray-600 line-through">{formatPrice(calculateOriginalPrice())}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-green-600 font-medium">Harga Community ({validatedReferralCode.name}):</span>
-                                            <span className="text-green-600 font-medium">{formatPrice(198000)}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-green-600 font-medium">Hemat:</span>
-                                            <span className="text-green-600 font-medium">{formatPrice(calculateOriginalPrice() - 198000)}</span>
-                                        </div>
-                                        <hr className="border-gray-300" />
                                         <div className="flex justify-between items-center">
                                             <span className="font-semibold">Total Pembayaran:</span>
                                             <span className="text-2xl font-bold text-primary">{formatPrice(calculatePrice())}</span>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className="flex justify-between items-center">
-                                        <span className="font-semibold">Total Pembayaran:</span>
-                                        <span className="text-2xl font-bold text-primary">{formatPrice(calculatePrice())}</span>
-                                    </div>
-                                )}
-                            </div>
+                                    )}
+                                </div>
 
-                            {/* Payment Methods */}
-                            <div className="space-y-3">
-                                {loadingPaymentMethods ? (
-                                    <div className="text-center py-8">
-                                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                                        <p className="mt-2 text-gray-600">Memuat metode pembayaran...</p>
+                                {/* Payment Methods */}
+                                <div className="space-y-3">
+                                    {loadingPaymentMethods ? (
+                                        <div className="text-center py-8">
+                                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                                            <p className="mt-2 text-gray-600">Memuat metode pembayaran...</p>
+                                        </div>
+                                    ) : paymentMethods.length === 0 ? (
+                                        <div className="text-center py-8">
+                                            <p className="text-gray-600">Tidak ada metode pembayaran tersedia</p>
+                                            <button
+                                                onClick={fetchPaymentMethods}
+                                                className="mt-2 text-primary hover:underline"
+                                            >
+                                                Coba lagi
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        paymentMethods.map((method) => (
+                                            <div
+                                                key={method.code}
+                                                className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${formData.paymentMethod === method.code
+                                                    ? 'border-primary bg-primary/5'
+                                                    : 'border-gray-200 hover:border-primary/50'
+                                                    }`}
+                                                onClick={() => handleInputChange('paymentMethod', method.code)}
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center space-x-3">
+                                                        <img
+                                                            src={method.icon_url}
+                                                            alt={method.name}
+                                                            className="w-8 h-8 object-contain"
+                                                        />
+                                                        <span className="font-medium">{method.name}</span>
+                                                    </div>
+                                                    <input
+                                                        type="radio"
+                                                        name="paymentMethod"
+                                                        value={method.code}
+                                                        checked={formData.paymentMethod === method.code}
+                                                        onChange={(e) => handleInputChange('paymentMethod', e.target.value)}
+                                                        className="w-4 h-4 text-primary"
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                                    <button
+                                        onClick={prevStep}
+                                        className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors touch-manipulation"
+                                    >
+                                        Kembali
+                                    </button>
+                                    <button
+                                        onClick={() => setShowConfirmation(true)}
+                                        className="flex-1 bg-accent text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors touch-manipulation"
+                                    >
+                                        Konfirmasi & Bayar
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Confirmation Modal */}
+                        {showConfirmation && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                                    <h3 className="text-xl font-bold mb-4">Konfirmasi Pendaftaran</h3>
+
+                                    <div className="space-y-3 text-sm">
+                                        <div className="flex justify-between">
+                                            <span>Kategori:</span>
+                                            <span className="font-semibold">
+                                                {formData.category === 'fun' ? 'Fun Run 5K' : 'Family Run 2.5K'}
+                                                {formData.category === 'fun' && ` - ${formData.packageType === 'general' ? 'Umum' : 'Community'}`}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between">
+                                            <span>Nama:</span>
+                                            <span className="font-semibold">{formData.name}</span>
+                                        </div>
+
+                                        <div className="flex justify-between">
+                                            <span>Email:</span>
+                                            <span className="font-semibold">{formData.email}</span>
+                                        </div>
+
+                                        <div className="flex justify-between">
+                                            <span>Telepon:</span>
+                                            <span className="font-semibold">{formData.phone}</span>
+                                        </div>
+
+                                        <div className="flex justify-between">
+                                            <span>Ukuran Jersey:</span>
+                                            <span className="font-semibold">
+                                                {formData.shirtSize || formData.customShirtSize}
+                                                {formData.category === 'family' && ` (Dewasa), ${formData.childShirtSize || formData.customChildShirtSize} (Anak)`}
+                                            </span>
+                                        </div>
+
+                                        {formData.category === 'family' && formData.childAge && (
+                                            <div className="flex justify-between">
+                                                <span>Umur Anak:</span>
+                                                <span className="font-semibold">{formData.childAge} tahun</span>
+                                            </div>
+                                        )}
+
+                                        {formData.communityReferral && (
+                                            <div className="flex justify-between">
+                                                <span>Kode Referral:</span>
+                                                <span className="font-semibold">{formData.communityReferral}</span>
+                                            </div>
+                                        )}
+
+                                        <div className="flex justify-between">
+                                            <span>Metode Pembayaran:</span>
+                                            <span className="font-semibold">
+                                                {paymentMethods.find(method => method.code === formData.paymentMethod)?.name || formData.paymentMethod}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between border-t pt-3">
+                                            <span>Total Pembayaran:</span>
+                                            <span className="font-bold text-primary">{formatPrice(calculatePrice())}</span>
+                                        </div>
                                     </div>
-                                ) : paymentMethods.length === 0 ? (
-                                    <div className="text-center py-8">
-                                        <p className="text-gray-600">Tidak ada metode pembayaran tersedia</p>
+
+                                    <div className="flex gap-4 mt-6">
                                         <button
-                                            onClick={fetchPaymentMethods}
-                                            className="mt-2 text-primary hover:underline"
+                                            onClick={() => setShowConfirmation(false)}
+                                            className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
                                         >
-                                            Coba lagi
+                                            Batal
+                                        </button>
+                                        <button
+                                            onClick={handleSubmit}
+                                            disabled={loading}
+                                            className="flex-1 bg-accent text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50"
+                                        >
+                                            {loading ? 'Memproses...' : 'Konfirmasi'}
                                         </button>
                                     </div>
-                                ) : (
-                                    paymentMethods.map((method) => (
-                                        <div
-                                            key={method.code}
-                                            className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${formData.paymentMethod === method.code
-                                                ? 'border-primary bg-primary/5'
-                                                : 'border-gray-200 hover:border-primary/50'
-                                                }`}
-                                            onClick={() => handleInputChange('paymentMethod', method.code)}
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center space-x-3">
-                                                    <img
-                                                        src={method.icon_url}
-                                                        alt={method.name}
-                                                        className="w-8 h-8 object-contain"
-                                                    />
-                                                    <span className="font-medium">{method.name}</span>
-                                                </div>
-                                                <input
-                                                    type="radio"
-                                                    name="paymentMethod"
-                                                    value={method.code}
-                                                    checked={formData.paymentMethod === method.code}
-                                                    onChange={(e) => handleInputChange('paymentMethod', e.target.value)}
-                                                    className="w-4 h-4 text-primary"
-                                                />
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                                <button
-                                    onClick={prevStep}
-                                    className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors touch-manipulation"
-                                >
-                                    Kembali
-                                </button>
-                                <button
-                                    onClick={() => setShowConfirmation(true)}
-                                    className="flex-1 bg-accent text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors touch-manipulation"
-                                >
-                                    Konfirmasi & Bayar
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Confirmation Modal */}
-                    {showConfirmation && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                            <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-                                <h3 className="text-xl font-bold mb-4">Konfirmasi Pendaftaran</h3>
-
-                                <div className="space-y-3 text-sm">
-                                    <div className="flex justify-between">
-                                        <span>Kategori:</span>
-                                        <span className="font-semibold">
-                                            {formData.category === 'fun' ? 'Fun Run 5K' : 'Family Run 2.5K'}
-                                            {formData.category === 'fun' && ` - ${formData.packageType === 'general' ? 'Umum' : 'Community'}`}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between">
-                                        <span>Nama:</span>
-                                        <span className="font-semibold">{formData.name}</span>
-                                    </div>
-
-                                    <div className="flex justify-between">
-                                        <span>Email:</span>
-                                        <span className="font-semibold">{formData.email}</span>
-                                    </div>
-
-                                    <div className="flex justify-between">
-                                        <span>Telepon:</span>
-                                        <span className="font-semibold">{formData.phone}</span>
-                                    </div>
-
-                                    <div className="flex justify-between">
-                                        <span>Ukuran Jersey:</span>
-                                        <span className="font-semibold">
-                                            {formData.shirtSize || formData.customShirtSize}
-                                            {formData.category === 'family' && ` (Dewasa), ${formData.childShirtSize || formData.customChildShirtSize} (Anak)`}
-                                        </span>
-                                    </div>
-
-                                    {formData.category === 'family' && formData.childAge && (
-                                        <div className="flex justify-between">
-                                            <span>Umur Anak:</span>
-                                            <span className="font-semibold">{formData.childAge} tahun</span>
-                                        </div>
-                                    )}
-
-                                    {formData.communityReferral && (
-                                        <div className="flex justify-between">
-                                            <span>Kode Referral:</span>
-                                            <span className="font-semibold">{formData.communityReferral}</span>
-                                        </div>
-                                    )}
-
-                                    <div className="flex justify-between">
-                                        <span>Metode Pembayaran:</span>
-                                        <span className="font-semibold">
-                                            {paymentMethods.find(method => method.code === formData.paymentMethod)?.name || formData.paymentMethod}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between border-t pt-3">
-                                        <span>Total Pembayaran:</span>
-                                        <span className="font-bold text-primary">{formatPrice(calculatePrice())}</span>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-4 mt-6">
-                                    <button
-                                        onClick={() => setShowConfirmation(false)}
-                                        className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
-                                    >
-                                        Batal
-                                    </button>
-                                    <button
-                                        onClick={handleSubmit}
-                                        disabled={loading}
-                                        className="flex-1 bg-accent text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50"
-                                    >
-                                        {loading ? 'Memproses...' : 'Konfirmasi'}
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         </section>
