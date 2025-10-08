@@ -164,7 +164,7 @@ export default function QRCodeDisplay({ registration, qrCodeUrl }: QRCodePagePro
                                         </div>
                                         <div className="flex flex-row justify-between">
                                             <div className="text-gray-600">No. BIB</div>
-                                            <div className="font-medium text-right text-dudulurun-teal">{registration.race.id}</div>
+                                            <div className="font-medium text-right text-dudulurun-teal">{registration.race.id.toString().padStart(3, '0')}</div>
                                         </div>
                                     </>
                                 )}

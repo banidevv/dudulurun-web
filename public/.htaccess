@@ -1,0 +1,43 @@
+# Enable static file serving
+
+Options -Indexes
+DirectoryIndex index.html
+
+# Set proper MIME types for images
+
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+    Header set Content-Type "image/jpeg"
+</FilesMatch>
+
+<FilesMatch "\.(png)$">
+    Header set Content-Type "image/png"
+</FilesMatch>
+
+<FilesMatch "\.(webp)$">
+    Header set Content-Type "image/webp"
+</FilesMatch>
+
+<FilesMatch "\.(svg)$">
+    Header set Content-Type "image/svg+xml"
+</FilesMatch>
+
+# Special configuration for race-packs directory
+
+<Directory "/race-packs">
+    Options -Indexes
+    AllowOverride None
+    Require all granted
+
+    # Set proper headers for race pack images
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</Directory>
+
+# Allow access to all files in public directory
+
+<RequireAll>
+    Require all granted
+</RequireAll>

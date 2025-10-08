@@ -7,14 +7,24 @@ const JWT_SECRET = new TextEncoder().encode(
 );
 
 export async function middleware(request: NextRequest) {
+  // Handle static files for race-packs
+  if (request.nextUrl.pathname.startsWith('/race-packs/')) {
+    // Let Next.js handle static files, but add CORS headers
+    const response = NextResponse.next();
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    return response;
+  }
+
   // Only run middleware for admin routes
   if (!request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.next();
   }
 
   // Skip middleware for admin login page and API
-  if (request.nextUrl.pathname === '/admin/login' || 
-      request.nextUrl.pathname === '/api/admin/auth') {
+  if (request.nextUrl.pathname === '/admin/login' ||
+    request.nextUrl.pathname === '/api/admin/auth') {
     return NextResponse.next();
   }
 
@@ -39,5 +49,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/admin/:path*', '/race-packs/:path*'],
 }; 
