@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import PhotoPreviewer from '@/components/PhotoPreviewer/PhotoPreviewer';
 
 interface Race {
     id: number;
@@ -271,10 +272,8 @@ export default function RacePage() {
                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-dudulurun-blue text-dudulurun-teal"
                         >
                             <option value="">All Categories</option>
-                            <option value="fun-run">Fun Run</option>
-                            <option value="fun-run-medali">Fun Run + Medali</option>
-                            <option value="family-challenge">Family Challenge</option>
-                            <option value="family-challenge-plus">Family Challenge Plus</option>
+                            <option value="fun">Fun Run</option>
+                            <option value="family">Family Run</option>
                         </select>
                     </div>
                     <div>
@@ -355,6 +354,9 @@ export default function RacePage() {
                                     />
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-dudulurun-blue uppercase tracking-wider">
+                                    No. BIB
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-dudulurun-blue uppercase tracking-wider">
                                     Race Pack Photo
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-dudulurun-blue uppercase tracking-wider">
@@ -386,19 +388,19 @@ export default function RacePage() {
                         <tbody className="bg-white divide-y divide-gray-200">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={10} className="px-6 py-4 text-center">
+                                    <td colSpan={11} className="px-6 py-4 text-center">
                                         Loading...
                                     </td>
                                 </tr>
                             ) : error ? (
                                 <tr>
-                                    <td colSpan={10} className="px-6 py-4 text-center text-red-500">
+                                    <td colSpan={11} className="px-6 py-4 text-center text-red-500">
                                         {error}
                                     </td>
                                 </tr>
                             ) : races.length === 0 ? (
                                 <tr>
-                                    <td colSpan={10} className="px-6 py-4 text-center">
+                                    <td colSpan={11} className="px-6 py-4 text-center">
                                         No race entries found
                                     </td>
                                 </tr>
@@ -414,8 +416,13 @@ export default function RacePage() {
                                             />
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-medium text-dudulurun-teal">
+                                                {race.id.toString().padStart(3, '0')}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
                                             {race.racePackPhotoUrl ? (
-                                                <img
+                                                <PhotoPreviewer
                                                     src={race.racePackPhotoUrl}
                                                     alt="Race Pack Photo"
                                                     className="w-16 h-16 object-cover rounded-lg"
@@ -474,8 +481,8 @@ export default function RacePage() {
                                             <button
                                                 onClick={() => handleToggleCheckIn(race.id, race.checkedIn)}
                                                 className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors ${race.checkedIn
-                                                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                                                    ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                                                     }`}
                                             >
                                                 {race.checkedIn ? 'Checked In' : 'Not Checked In'}

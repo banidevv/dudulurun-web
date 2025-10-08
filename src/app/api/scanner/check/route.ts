@@ -28,21 +28,66 @@ export async function POST(request: Request) {
             );
         }
 
+        const lastRace = await prisma.race.findFirst({
+            orderBy: { id: 'desc' },
+            select: { id: true },
+            where: {
+                registration: {
+                    category: registration.category,
+                },
+            },
+        });
+
+        const lastRaceId = lastRace ? lastRace.id : null;
+        var raceId = 0;
+
+
+        if (lastRaceId) {
+            if (registration.category === 'fun') {
+                if (lastRaceId >= 1 && lastRaceId <= 300 || lastRaceId >= 377 && lastRaceId <= 428) {
+                    raceId = lastRaceId + 1;
+                }
+            } else if (registration.category === 'family') {
+                if (lastRaceId >= 377 && lastRaceId <= 428) {
+                    raceId = lastRaceId + 1;
+                }
+            }
+        } else {
+            if (registration.category === 'fun') {
+                raceId = 1;
+            } else if (registration.category === 'family') {
+                raceId = 377;
+            }
+        }
+
+        if (raceId === 0) {
+            return NextResponse.json(
+                { error: 'No available id for this category' },
+                { status: 400 }
+            );
+        }
+
         if (!registration.race) {
             return NextResponse.json({
-                data : {
-                    checkedType : 'racePack',
-                    registration : registration,
-                    race : null,
+                data: {
+                    checkedType: 'racePack',
+                    registration: registration,
+                    race: {
+                        id: raceId,
+                        racePackPhotoUrl: null,
+                        checkedIn: false,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    },
                 }
             });
         }
 
         return NextResponse.json({
-            data : {
-                checkedType : 'checkIn',
-                registration : registration,
-                race : registration.race,
+            data: {
+                checkedType: 'checkIn',
+                registration: registration,
+                race: registration.race,
             }
         });
 

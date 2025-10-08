@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import * as XLSX from 'xlsx';
 import { encrypt } from '@/lib/encryption';
 
-interface  Registration {
+interface Registration {
   id: number;
   name: string;
   email: string;
@@ -322,10 +322,8 @@ export default function RegistrationsPage() {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-dudulurun-blue text-dudulurun-teal"
             >
               <option value="">All Categories</option>
-              <option value="fun-run">Fun Run</option>
-              <option value="fun-run-medali">Fun Run + Medali</option>
-              <option value="family-challenge">Family Challenge</option>
-              <option value="family-challenge-plus">Family Challenge Plus</option>
+              <option value="fun">Fun Run</option>
+              <option value="family">Family Run</option>
             </select>
           </div>
           <div>
