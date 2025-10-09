@@ -6,6 +6,7 @@ import PhotoPreviewer from '@/components/PhotoPreviewer/PhotoPreviewer';
 
 interface Race {
     id: number;
+    raceId: number; // Add raceId field for editing
     racePackPhotoUrl: string;
     checkedIn: boolean;
     createdAt: string;
@@ -88,7 +89,12 @@ export default function RacePage() {
             }
 
             const data = await response.json();
-            setRaces(data.races);
+            // Map the races to include raceId field
+            const racesWithRaceId = data.races.map((race: any) => ({
+                ...race,
+                raceId: race.id // Add raceId field for editing
+            }));
+            setRaces(racesWithRaceId);
             setPagination(data.pagination);
             setError(null);
         } catch (err) {
@@ -151,12 +157,15 @@ export default function RacePage() {
                 },
                 body: JSON.stringify({
                     id: editingRace.id,
-                    ...updatedData,
+                    raceId: updatedData.raceId,
+                    racePackPhotoUrl: updatedData.racePackPhotoUrl,
+                    checkedIn: updatedData.checkedIn,
                 }),
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update race data');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to update race data');
             }
 
             await fetchRaces();
@@ -568,7 +577,7 @@ export default function RacePage() {
             {/* Edit Modal */}
             {showEditModal && editingRace && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-lg">
                         <h2 className="text-xl font-bold text-dudulurun-teal mb-4">Edit Race Entry</h2>
                         <EditRaceForm
                             race={editingRace}
@@ -626,6 +635,7 @@ function EditRaceForm({
     onCancel: () => void;
 }) {
     const [formData, setFormData] = useState({
+        raceId: race.raceId || race.id, // Use raceId if available, fallback to id
         racePackPhotoUrl: race.racePackPhotoUrl,
         checkedIn: race.checkedIn,
     });
@@ -637,6 +647,18 @@ function EditRaceForm({
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Race ID (BIB Number)</label>
+                <input
+                    type="number"
+                    value={formData.raceId}
+                    onChange={(e) => setFormData(prev => ({ ...prev, raceId: parseInt(e.target.value) || 0 }))}
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-dudulurun-blue"
+                    placeholder="Enter race ID"
+                    min="1"
+                />
+            </div>
+
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Race Pack Photo URL</label>
                 <input

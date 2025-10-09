@@ -100,7 +100,7 @@ export async function PUT(request: NextRequest) {
     const prisma = getPrismaClient();
     try {
         const body = await request.json();
-        const { id, racePackPhotoUrl, checkedIn } = body;
+        const { id, raceId, racePackPhotoUrl, checkedIn } = body;
 
         if (!id) {
             return NextResponse.json(
@@ -113,6 +113,62 @@ export async function PUT(request: NextRequest) {
         if (racePackPhotoUrl !== undefined) updateData.racePackPhotoUrl = racePackPhotoUrl;
         if (checkedIn !== undefined) updateData.checkedIn = checkedIn;
 
+        // Handle raceId update - this requires special handling since it's the primary key
+        if (raceId !== undefined && raceId !== parseInt(id)) {
+            // Check if the new raceId already exists
+            const existingRace = await prisma.race.findUnique({
+                where: { id: raceId }
+            });
+
+            if (existingRace) {
+                return NextResponse.json(
+                    { error: 'Race ID already exists' },
+                    { status: 400 }
+                );
+            }
+
+            // For raceId updates, we need to delete the old record and create a new one
+            // since we can't update the primary key directly
+            const currentRace = await prisma.race.findUnique({
+                where: { id: parseInt(id) },
+                include: {
+                    registration: true
+                }
+            });
+
+            if (!currentRace) {
+                return NextResponse.json(
+                    { error: 'Race not found' },
+                    { status: 404 }
+                );
+            }
+
+            // Delete the old race record
+            await prisma.race.delete({
+                where: { id: parseInt(id) }
+            });
+
+            // Create a new race record with the new ID
+            const newRace = await prisma.race.create({
+                data: {
+                    id: raceId,
+                    racePackPhotoUrl: racePackPhotoUrl !== undefined ? racePackPhotoUrl : currentRace.racePackPhotoUrl,
+                    checkedIn: checkedIn !== undefined ? checkedIn : currentRace.checkedIn,
+                    registrationId: currentRace.registrationId,
+                },
+                include: {
+                    registration: {
+                        include: {
+                            payment: true,
+                        },
+                    },
+                },
+            });
+
+            return NextResponse.json(newRace);
+        }
+
+        // Regular update for non-ID fields
         const updatedRace = await prisma.race.update({
             where: { id: parseInt(id) },
             data: updateData,

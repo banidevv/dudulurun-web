@@ -48,7 +48,7 @@ export async function POST(request: Request) {
                     raceId = lastRaceId + 1;
                 }
             } else if (registration.category === 'family') {
-                if (lastRaceId >= 377 && lastRaceId <= 428) {
+                if (lastRaceId >= 301 && lastRaceId <= 376) {
                     raceId = lastRaceId + 1;
                 }
             }
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
             if (registration.category === 'fun') {
                 raceId = 1;
             } else if (registration.category === 'family') {
-                raceId = 377;
+                raceId = 301;
             }
         }
 
