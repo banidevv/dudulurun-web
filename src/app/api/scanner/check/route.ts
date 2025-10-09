@@ -28,8 +28,8 @@ export async function POST(request: Request) {
             );
         }
 
-        const lastRace = await prisma.race.findFirst({
-            orderBy: { id: 'desc' },
+        // Get all existing race IDs for this category
+        const existingRaces = await prisma.race.findMany({
             select: { id: true },
             where: {
                 registration: {
@@ -38,27 +38,36 @@ export async function POST(request: Request) {
             },
         });
 
-        const lastRaceId = lastRace ? lastRace.id : null;
-        var raceId = 0;
+        const existingIds = new Set(existingRaces.map(race => race.id));
+        let raceId = 0;
 
-
-        if (lastRaceId) {
-            if (registration.category === 'fun') {
-                if (lastRaceId >= 1 && lastRaceId <= 300 || lastRaceId >= 377 && lastRaceId <= 428) {
-                    raceId = lastRaceId + 1;
-                }
-            } else {
-                if (lastRaceId >= 301 && lastRaceId <= 376) {
-                    raceId = lastRaceId + 1;
+        if (registration.category === 'fun') {
+            // Check range 1-300 first
+            for (let id = 1; id <= 300; id++) {
+                if (!existingIds.has(id)) {
+                    raceId = id;
+                    break;
                 }
             }
-        } else {
-            if (registration.category === 'fun') {
-                raceId = 1;
-            } else {
-                raceId = 301;
+            // If no ID found in 1-300, check range 377-428
+            if (raceId === 0) {
+                for (let id = 377; id <= 428; id++) {
+                    if (!existingIds.has(id)) {
+                        raceId = id;
+                        break;
+                    }
+                }
+            }
+        } else if (registration.category === 'family') {
+            // Check range 301-376
+            for (let id = 301; id <= 376; id++) {
+                if (!existingIds.has(id)) {
+                    raceId = id;
+                    break;
+                }
             }
         }
+
 
         if (raceId === 0) {
             return NextResponse.json(
